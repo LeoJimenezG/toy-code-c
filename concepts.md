@@ -122,15 +122,15 @@ Para la mayoría de objetos, el lifetime está directamente relacionado con su *
 Los objetos creados dinámicamente tienen reglas especiales. Para los objetos con duración de almacenamiento asignada, el tiempo de vida comienza cuando la función de asignación retorna (incluyendo el retorno de realloc) y termina cuando se llama a la función realloc o de desasignación. Estos objetos nacen con malloc(), calloc(), o realloc(), y mueren con free() o realloc(). Su lifetime está completamente bajo control propio, lo que da poder pero también responsabilidad.
 
 C también tiene un concepto más sutil llamado "temporary lifetime" para objetos temporales. Los objetos de struct y union con miembros de array que son designados por expresiones que no son lvalue, tienen tiempo de vida temporal. Entonces, en el siguiente ejemplo, el tiempo de vida temporal comienza cuando se evalúa la expresión que se refiere a tal objeto y termina cuando termina la expresión completa contenedora o el declarador completo.
-    ```C
-    struct T { double a[4]; };
-    struct T f(void) { return (struct T){3.15}; }
-    double g1(double* x) { return *x; }
-
-    int main(void) {
-        double d = g1(f().a);  // ¿Es esto seguro?
-    }
-    ```
+```C
+struct T { double a[4]; };
+struct T f(void) { return (struct T){3.15}; }
+double g1(double* x) { return *x; }
+int main(void)
+{
+    double d = g1(f().a);  // ¿Es esto seguro?
+}
+```
 
 ### Main Function
 Cualquier programa de C hecho para ser ejecutado en un entorno hosteado (con un Sistema Operativo), debe contener la definición de una función llamada *main*, la cual, es designada como el punto de entrada para el programa. Hay dos tipos principales para su implementación:
@@ -175,7 +175,9 @@ Una *declaration* es un *construct* que introduce uno o más identificadores al 
 ### Definitions
 Una *definition* es una declaración que provee toda la información sobre los identificadores que declara. Por ejemplo, una declaración de una función que incluye en cuerpo de dicha función, es una definición; una declaración de un objeto que aloja memoria, es una definición, similar con structs y unions.
 * Ejemplo:
-    * int foo(double x) { return x; }
-    * int n = 10;
-    * struct X { int m; }
+    ```C
+    int foo(double x) { return x; } // Function definition
+    int n = 10; // Variable definition
+    struct X { int m; } // Struct definition
+    ```
 
