@@ -131,6 +131,34 @@ int main(void)
     double d = g1(f().a);  // ¿Es esto seguro?
 }
 ```
+### Lookup and Name Spaces
+Cuando un identificador es localizado, se realiza una búsqueda o *lookup*, para intentar localizar la declaración que introdujo dicho identificador y que está en el scope correspondiente. Por lo tanto, C permite más de una declaración del mismo identificador en el mism scope siempre y cuando pertenezcan a diferentes categorías llamadas *name spaces*. Los siguientes son los *name spaces* disponibles y siguen la jerarquía:
+1. **Label name space**: Todos los identificadores declarados como *labels*.
+2. **Tag names**: Todos los identificadores declarados como nombres de *structs*, *unions*, y *enumerated types*.
+3. **Member names**: Todos los identificadores declarados como miembros de *struct* o *union*.
+4. **Global attribute name space**: *attribute tokens* definidos por el estándar.
+5. **Non-standard attribute names**: Nombres de atributos seguidos por prefijos de atributos.
+6. **Ordinary identifiers**: Son todos los otros identificadores, como de nombres de funciones, nombres de objetos, nombres de typedefs, constantes de enumeración, etc.
+
+Ejemplo:
+```C
+void foo (void) { return; } // ordinary name space, file scope
+struct foo {      // tag name space, file scope
+    int foo;      // member name space for this struct foo, file scope
+    enum bar {    // tag name space, file scope
+        RED       // ordinary name space, file scope
+    } bar;        // member name space for this struct foo, file scope
+    struct foo* p; // OK: uses tag/file scope name "foo"
+};
+enum bar x; // OK: uses tag/file-scope bar
+// int foo; // Error: ordinary name space foo already in scope 
+//union foo { int a, b; }; // Error: tag name space foo in scope
+ 
+int main(void)
+{
+    goto foo; // OK uses "foo" from label name space/function scope
+}
+```
 
 ### Main Function
 Cualquier programa de C hecho para ser ejecutado en un entorno hosteado (con un Sistema Operativo), debe contener la definición de una función llamada *main*, la cual, es designada como el punto de entrada para el programa. Hay dos tipos principales para su implementación:
