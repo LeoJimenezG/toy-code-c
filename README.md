@@ -131,6 +131,7 @@ int main(void)
     double d = g1(f().a);  // ¿Es esto seguro?
 }
 ```
+
 ### Lookup and Name Spaces
 Cuando un identificador es localizado, se realiza una búsqueda o *lookup*, para intentar localizar la declaración que introdujo dicho identificador y que está en el scope correspondiente. Por lo tanto, C permite más de una declaración del mismo identificador en el mism scope siempre y cuando pertenezcan a diferentes categorías llamadas *name spaces*. Los siguientes son los *name spaces* disponibles y siguen la jerarquía:
 1. **Label name space**: Todos los identificadores declarados como *labels*.
@@ -159,6 +160,64 @@ int main(void)
     goto foo; // OK uses "foo" from label name space/function scope
 }
 ```
+
+### Types
+Los objetos, funciones y expresiones en C tienen una propiedad llamada *type*, que determina cómo se debe interpretar el valor binario almacenado en dicho objeto o evaluado por dicha expresión. El sistema tipos de C consiste en los siguientes *fudamental types*:
+#### Void type
+* `void`: Representa la ausencia de tipo, utilizado principalmente para funciones que no retornan un valor o para punteros genéricos.
+#### Basic type
+* `char`: Tipo de caracter básico, y puede ser *signed* o *unsigned* (8 bits).
+* `signed char`: Tipo de caracter con signo.
+* `short`: Entero corto con signo (16 bits).
+* `int`: Entero estándar con signo (32 bits).
+* `long`: Entero largo con signo (64 bits).
+* `long long`: Entero extra largo con signo (128 bits).
+* `_Bool`: Tipo booleano (0/1 o false/true).
+* `unsigned char`: Tipo de caracter sin signo.
+* `unsigned short`: Entero corto sin signo (16 bits).
+* `unsigned int`: Entero estándar sin signo (16-32 bits).
+* `unsigned long`: Entero largo sin signo (32-64 bits).
+* `unsigned long long`: Entero extra largo sin signo (64 bits).
+* `float`: Punto flotante de precisión simple.
+* `double`: Punto flotante de precisión doble.
+* `long double`: Punto flotante de precisión extendida.
+#### Derived type
+* `Array`: Arrays o arreglos de elementos de un solo tipo.
+* `struct`: Estructura que agrupa diferentes tipos de datos.
+* `union`: Uniones que permiten almacenar diferentes tipos en la misma ubicación de memoria.
+* `Function`: Tipo que representa una función.
+* `Pointer`: Tipo que almacena direcciones de memoria.
+* `Atomic`: Tipo usado en la programación concurrente.
+
+Cabe mencionar que para cada uno de estos tipos pueden existir diferentes versiones dependiendo de la palabra reservada que se use o no:
+* Si no se usa alguna palabra reservada, su comportamiento es normal.
+* Si se usa *const* hace que el objeto sea solo de lectura.
+* Si se usa *volatile* indica que el valor puede cambiar de manera impredecible.
+* Si se usa *restrict* para optimizar los punteros.
+
+### Objects and Alignment requirement
+Los programas en C pueden Crear, Destruir, Acceder y Manipular objetos, donde un *object* es una región de información almacenada en el entorno de ejecución cuyo contenido puede representar el valor o valores del objeto. Todo objeto puede tener las siguientes características básicas:
+* *size*: Tamaño del objeto o la cantidad de bytes que ocupa en memoria (sizeof).
+* *alignment requirement*: Es un valor entero de tipo *size_t* que representa la restricción de alineación que determina en qué direcciones de memoria puede comenzar un objeto de cierto tipo. Es decir, indica el múltiplo del que debe ser una dirección de memoria para poder iniciar el almacenamiento de un objeto de un tipo específico, con la intención hacer la lectura de memoria más eficiente. Llegando al punto en que el orden de declaración de variables importa.
+* *storage duration*: Se refiere al período durante el cual un espacio de memoria está reservado y disponible para un objeto. Determina cuándo el sistema asigna memoria para un objeto y cuándo esa memoria es liberada y puede ser reutilizada por el sistema para otros propósitos. En C existen cuatro categorías: automatic
+* *lifetime*: Se refiere al período durante el cual el contenido de un objeto existe y es válido en un espacio de memoria dado. Comienza cuando el objeto se inicializa con un valor y termina cuando el objeto es destruido o cuando su valor deja de ser válido.
+* *effective type*: Se refiere al tipo de dato que C considera que está almacenado en un espacio de memoria específico en un momento dado. Esta "etiqueta" invisible determina cómo el compilador puede optimizar el código y qué tipos de accesos a memoria son válidos según las reglas de strict aliasing.
+* *value*: Es el valor asignado al objeto y depende del tipo de dicho objeto. Puede ser indeterminado.
+* *identifier*: Este es el nombre que denota o identifica al objeto, y es opcional pero muy útil.
+
+### As-if rule
+Esta regla permite al compilador hacer "trampa", o realizar cualquier tipo de transformación en el código con la intención de optimizarlo, siempre y cuando no modifique el comportamiento observable del programa. Esta regla se cumple siempre y cuando se protega lo siguiente:
+1. Objetos volátiles:
+    * Antes C11: En cada "sequence point", los valores de objetos `volatile` deben estar estables.
+    * Desde C11: Los accesos a `volatile` ocurren exactamente según la semántica escrita, sin reordenamiento
+2. Archivos:
+    * Al terminar el programa, los datos escritos a archivos deben ser idénticos a ejecutar el código literalmente.
+3. Entrada/aalida interactiva:
+    * Los prompts deben mostrarse antes de esperar entrada del usuario.
+4. Entorno de punto flotante:
+    * Si `#pragma STDC FENV_ACCESS` está `ON`, los cambios al entorno de punto flotante se preservan (excepciones, modos de redondeo).
+
+Esta regla es crucial cuando se trabaja con hardware, sistemas embebidos, o cuando las optimizaciones del compilador interfieren con el comportamiento esperado. 
 
 ### Main Function
 Cualquier programa de C hecho para ser ejecutado en un entorno hosteado (con un Sistema Operativo), debe contener la definición de una función llamada *main*, la cual, es designada como el punto de entrada para el programa. Hay dos tipos principales para su implementación:
