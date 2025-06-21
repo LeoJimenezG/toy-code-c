@@ -38,7 +38,7 @@ En esta tercera fase, el compilador convierte el código en *preprocessing token
 Para la generación de los *preprocessing tokens*, se sigue la regla de *maximal munch*, que básicamente busca tomar la secuecia más larga de caracteres (mayor cantidad de caracteres) que puedan formar un token válido.
 
 #### Phase 4
-En la cuarta fase el *proprocessor* es ejecutado, el cual, se encarga de ejecutar todas aquellas partes del código que inician con el caracter "#", como #include o #define. Entonces, cada archivo que es introducido al archivo source, pasa por todas las fases anteriores (Phase 1 - 4) recursivamente, lo que asegura que todos los archivos a usar tengan el formato correcto y el compilador puede trabajar con ellos. Al final de esta fase, todo el código ejectutado por el *preprocessor* es eliminado del archivo source, pues es reemplazado por el resultado correspondiente.
+En la cuarta fase el *proprocessor* es ejecutado, el cual, se encarga de ejecutar todas aquellas partes del código que inician con el caracter `#`, como `#include` o `#define`. Entonces, cada archivo que es introducido al archivo source, pasa por todas las fases anteriores (Phase 1 - 4) recursivamente, lo que asegura que todos los archivos a usar tengan el formato correcto y el compilador puede trabajar con ellos. Al final de esta fase, todo el código ejectutado por el *preprocessor* es eliminado del archivo source, pues es reemplazado por el resultado correspondiente.
 
 #### Phase 5
 En esta fase, todos los caracteres de escape se encuentran representados por caracteres del *source character set*, por lo que son convertidos a caracteres de *execution character set*. Es decir, que todos aquellos caracteres de escape como \n, son convertidos a caracteres que el compilador realmente puede interpretar por lo que son.
@@ -55,41 +55,41 @@ En esta última fase, se da el proceso de *linking*, donde las *translation unit
 ### Punctuation
 Hay un total de 47 símbolos de puntuación en C, y algunos pueden tener múltiples funcionalidades:
 #### Delimitation and Grouping
-* {} - Delimitan bloques de código, listas de inicializadores, y definiciones de estructuras, uniones y enumeraciones.
-* [] - Actúan como operador de subscripción para arrays, forman parte de declaradores de arrays, y se usan para designadores en inicialización.
-* () - Agrupan expresiones, delimitan llamadas a funciones, encierran operandos, rodean listas de parámetros, y aparecen en estructuras de control.
+* `{}` - Delimitan bloques de código, listas de inicializadores, y definiciones de estructuras, uniones y enumeraciones.
+* `[]` - Actúan como operador de subscripción para arrays, forman parte de declaradores de arrays, y se usan para designadores en inicialización.
+* `()` - Agrupan expresiones, delimitan llamadas a funciones, encierran operandos, rodean listas de parámetros, y aparecen en estructuras de control.
 #### Preprocessing
-* #- Introduce directivas del preprocesador. También funciona como operador de "stringificación" que convierte argumentos de macro en cadenas de texto.
-* ##- Es el operador de concatenación de tokens del preprocesador, que une elementos adyacentes para formar un solo token.
+* `#` - Introduce directivas del preprocesador. También funciona como operador de "stringificación" que convierte argumentos de macro en cadenas de texto.
+* `##` - Es el operador de concatenación de tokens del preprocesador, que une elementos adyacentes para formar un solo token.
 #### Control and Separation
-* ; - Termina sentencias y declaraciones.
-* : - Aparece en el operador condicional, en etiquetas, en campos de bits.
-* , - Funciona como operador secuencial y como separador en listas de declaradores, argumentos de función, inicializadores, y parámetros de macro.
+* `;` - Termina sentencias y declaraciones.
+* `:` - Aparece en el operador condicional, en etiquetas, en campos de bits.
+* `,` - Funciona como operador secuencial y como separador en listas de declaradores, argumentos de función, inicializadores, y parámetros de macro.
 #### Access and Navegation
-* . - Operador de acceso a miembros de estructuras y uniones, y designadores para miembros específicos en inicialización.
-* -> - Operador de acceso a miembros a través de punteros, equivalente a (*ptr).member.
-* ... - Indica funciones variádicas (que aceptan número variable de argumentos) y macros variádicas.
-* ? - Forma parte del operador condicional ternario.
-* :: - Indica alcance de atributos y parámetros prefijados del preprocesador. 
+* `.` - Operador de acceso a miembros de estructuras y uniones, y designadores para miembros específicos en inicialización.
+* `->` - Operador de acceso a miembros a través de punteros, equivalente a (*ptr).member.
+* `...` - Indica funciones variádicas (que aceptan número variable de argumentos) y macros variádicas.
+* `?` - Forma parte del operador condicional ternario.
+* `::` - Indica alcance de atributos y parámetros prefijados del preprocesador. 
 #### Arithmetic and Logical
-* +, -, *, /, % - Funcionan como operadores aritméticos básicos, donde * también actúa como operador de indirección para punteros y como indicador de puntero en declaraciones.
-* ~ - Operador de complemento bit a bit (NOT).
-* ! - Operador de negación lógica (NOT lógico).
+* `+`, `-`, `*`, `/`, `%` - Funcionan como operadores aritméticos básicos, donde * también actúa como operador de indirección para punteros y como indicador de puntero en declaraciones.
+* `~` - Operador de complemento bit a bit (NOT).
+* `!` - Operador de negación lógica (NOT lógico).
 #### Bit-to-Bit and Logical
-* ^ - Operador XOR bit a bit.
-* & - Operador AND bit a bit y operador de dirección (para obtener la dirección de una variable).
-* | - Operador OR bit a bit.
-* && - Operador AND lógico.
-* || - Operador OR lógico.
-* <<, >> - Operadores de desplazamiento de bits a la izquierda y derecha.
+* `^` - Operador XOR bit a bit.
+* `&` - Operador AND bit a bit y operador de dirección (para obtener la dirección de una variable).
+* `|` - Operador OR bit a bit.
+* `&&` - Operador AND lógico.
+* `||` - Operador OR lógico.
+* `<<`, `>>` - Operadores de desplazamiento de bits a la izquierda y derecha.
 #### Assignation
-* = - Operador de asignación simple, también usado en inicialización y definición de constantes de enumeración.
-* +=, -=, *=, /=, %=, ^=, &=, |=, <<=, >>= combinan una operación aritmética o bit a bit con asignación.
+* `=` - Operador de asignación simple, también usado en inicialización y definición de constantes de enumeración.
+* `+=`, `-=`, `*=`, `/=`, `%=`, `^=`, `&=`, `|=`, `<<=`, `>>=` combinan una operación aritmética o bit a bit con asignación.
 #### Comparation
-* <, >, <=, >= - Operadores relacionales para comparaciones numéricas. Los símbolos <, > también delimitan nombres de cabecera en directivas del preprocesador.
-* ==, != - Operadores de igualdad y desigualdad.
+* `<, >`, `<=`, `>=` - Operadores relacionales para comparaciones numéricas. Los símbolos <, > también delimitan nombres de cabecera en directivas del preprocesador.
+* `==`, `!=` - Operadores de igualdad y desigualdad.
 #### Increment-Decrement
-* ++, -- - Operadores de incremento y decremento, que pueden usarse como prefijo o sufijo.
+* `++`, `--` - Operadores de incremento y decremento, que pueden usarse como prefijo o sufijo.
 
 ### Identifier
 Un *identifier* es una secuencia arbitraria larga de dígitos, guiones bajos, letras, etc. Para que sea válido debe empezar con un caracter que no sea numérico o que no sea Unicode. Además, los identificadores son *case-sensitive*.
@@ -106,22 +106,22 @@ En cuanto a los límites de longitud de un identificador, con la tecnología act
 
 ### Scope
 Cada identificador que aparece en un programa de C es visible solamente en alguna porción discontigua del código, a lo que se le llama *scope*. Entonces, C tiene cuatro diferentes tipos de *scope*, excluyendo sus combinaciones:
-* Block Scope: Este es el tipo de scope más común y restrictivo. Cualquier identificador declarado dentro de una sentencia compuesta (entre llaves), incluyendo cuerpos de funciones, o en expresiones dentro de sentencias if, switch, for, while, o do-while, tiene alcance de bloque. Su vida útil comienza exactamente en el punto donde lo declaras y termina cuando se cierra el bloque correspondiente.
-* File Scope: Este representa el alcance más amplio para variables regulares. El alcance de cualquier identificador declarado fuera de cualquier bloque o lista de parámetros comienza en el punto de declaración y termina al final de la unidad de traducción. También, es conocido como variales globales.
-* Function Scope: Este es un tipo muy específico que se aplica exclusivamente a las etiquetas (labels) usadas con goto. Una etiqueta declarada dentro de una función está en alcance en todas partes dentro de esa función, en todos los bloques anidados, antes y después de su propia declaración.
-* Function Prototype Scope: Este es el más limitado de todos los scopes. El alcance de un nombre introducido en la lista de parámetros de una declaración de función que no es una definición termina al final del declarador de función.
+* `Block Scope`: Este es el tipo de scope más común y restrictivo. Cualquier identificador declarado dentro de una sentencia compuesta (entre llaves), incluyendo cuerpos de funciones, o en expresiones dentro de sentencias if, switch, for, while, o do-while, tiene alcance de bloque. Su vida útil comienza exactamente en el punto donde lo declaras y termina cuando se cierra el bloque correspondiente.
+* `File Scope`: Este representa el alcance más amplio para variables regulares. El alcance de cualquier identificador declarado fuera de cualquier bloque o lista de parámetros comienza en el punto de declaración y termina al final de la unidad de traducción. También, es conocido como variales globales.
+* `Function Scope`: Este es un tipo muy específico que se aplica exclusivamente a las etiquetas (labels) usadas con goto. Una etiqueta declarada dentro de una función está en alcance en todas partes dentro de esa función, en todos los bloques anidados, antes y después de su propia declaración.
+* `Function Prototype Scope`: Este es el más limitado de todos los scopes. El alcance de un nombre introducido en la lista de parámetros de una declaración de función que no es una definición termina al final del declarador de función.
 
 ### Lifetime
 Cada objeto en C existe, tiene una dirección constante, retiene su último valor almacenado (excepto cuando el valor es indeterminado), y para VLA, retiene su tamaño durante una porción de la ejecución del programa conocida como el tiempo de vida de este objeto.
 
 Para la mayoría de objetos, el lifetime está directamente relacionado con su *storage duration*. Para los objetos que se declaran con duración de almacenamiento automática, estática y de hilo, el tiempo de vida es igual a su duración de almacenamiento. Esto significa que:
-* **Variables automáticas (locales)**: Viven desde que se declaran hasta que termina su bloque.
-* **Variables estáticas**: Viven durante toda la ejecución del programa.
-* **Variables de hilo**: Viven durante la vida del hilo que las creó.
+* `Variables automáticas (locales)`: Viven desde que se declaran hasta que termina su bloque.
+* `Variables estáticas`: Viven durante toda la ejecución del programa.
+* `Variables de hilo`: Viven durante la vida del hilo que las creó.
 
-Los objetos creados dinámicamente tienen reglas especiales. Para los objetos con duración de almacenamiento asignada, el tiempo de vida comienza cuando la función de asignación retorna (incluyendo el retorno de realloc) y termina cuando se llama a la función realloc o de desasignación. Estos objetos nacen con malloc(), calloc(), o realloc(), y mueren con free() o realloc(). Su lifetime está completamente bajo control propio, lo que da poder pero también responsabilidad.
+Los objetos creados dinámicamente tienen reglas especiales. Para los objetos con duración de almacenamiento asignada, el tiempo de vida comienza cuando la función de asignación retorna (incluyendo el retorno de realloc) y termina cuando se llama a la función realloc o de desasignación. Estos objetos nacen con `malloc()`, `calloc()`, o `realloc()`, y mueren con `free()` o `realloc()`. Su lifetime está completamente bajo control propio, lo que da poder pero también responsabilidad.
 
-C también tiene un concepto más sutil llamado "temporary lifetime" para objetos temporales. Los objetos de struct y union con miembros de array que son designados por expresiones que no son lvalue, tienen tiempo de vida temporal. Entonces, en el siguiente ejemplo, el tiempo de vida temporal comienza cuando se evalúa la expresión que se refiere a tal objeto y termina cuando termina la expresión completa contenedora o el declarador completo.
+C también tiene un concepto más sutil llamado *temporary lifetime* para objetos temporales. Los objetos de struct y union con miembros de array que son designados por expresiones que no son lvalue, tienen tiempo de vida temporal. Entonces, en el siguiente ejemplo, el tiempo de vida temporal comienza cuando se evalúa la expresión que se refiere a tal objeto y termina cuando termina la expresión completa contenedora o el declarador completo.
 ```C
 struct T { double a[4]; };
 struct T f(void) { return (struct T){3.15}; }
@@ -134,12 +134,12 @@ int main(void)
 
 ### Lookup and Name Spaces
 Cuando un identificador es localizado, se realiza una búsqueda o *lookup*, para intentar localizar la declaración que introdujo dicho identificador y que está en el scope correspondiente. Por lo tanto, C permite más de una declaración del mismo identificador en el mism scope siempre y cuando pertenezcan a diferentes categorías llamadas *name spaces*. Los siguientes son los *name spaces* disponibles y siguen la jerarquía:
-1. **Label name space**: Todos los identificadores declarados como *labels*.
-2. **Tag names**: Todos los identificadores declarados como nombres de *structs*, *unions*, y *enumerated types*.
-3. **Member names**: Todos los identificadores declarados como miembros de *struct* o *union*.
-4. **Global attribute name space**: *attribute tokens* definidos por el estándar.
-5. **Non-standard attribute names**: Nombres de atributos seguidos por prefijos de atributos.
-6. **Ordinary identifiers**: Son todos los otros identificadores, como de nombres de funciones, nombres de objetos, nombres de typedefs, constantes de enumeración, etc.
+1. `Label name space`: Todos los identificadores declarados como *labels*.
+2. `Tag names`: Todos los identificadores declarados como nombres de *structs*, *unions*, y *enumerated types*.
+3. `Member names`: Todos los identificadores declarados como miembros de *struct* o *union*.
+4. `Global attribute name space`: *attribute tokens* definidos por el estándar.
+5. `Non-standard attribute names`: Nombres de atributos seguidos por prefijos de atributos.
+6. `Ordinary identifiers`: Son todos los otros identificadores, como de nombres de funciones, nombres de objetos, nombres de typedefs, constantes de enumeración, etc.
 
 Ejemplo:
 ```C
@@ -197,13 +197,39 @@ Cabe mencionar que para cada uno de estos tipos pueden existir diferentes versio
 
 ### Objects and Alignment requirement
 Los programas en C pueden Crear, Destruir, Acceder y Manipular objetos, donde un *object* es una región de información almacenada en el entorno de ejecución cuyo contenido puede representar el valor o valores del objeto. Todo objeto puede tener las siguientes características básicas:
-* *size*: Tamaño del objeto o la cantidad de bytes que ocupa en memoria (sizeof).
-* *alignment requirement*: Es un valor entero de tipo *size_t* que representa la restricción de alineación que determina en qué direcciones de memoria puede comenzar un objeto de cierto tipo. Es decir, indica el múltiplo del que debe ser una dirección de memoria para poder iniciar el almacenamiento de un objeto de un tipo específico, con la intención hacer la lectura de memoria más eficiente. Llegando al punto en que el orden de declaración de variables importa.
-* *storage duration*: Se refiere al período durante el cual un espacio de memoria está reservado y disponible para un objeto. Determina cuándo el sistema asigna memoria para un objeto y cuándo esa memoria es liberada y puede ser reutilizada por el sistema para otros propósitos. En C existen cuatro categorías: automatic
-* *lifetime*: Se refiere al período durante el cual el contenido de un objeto existe y es válido en un espacio de memoria dado. Comienza cuando el objeto se inicializa con un valor y termina cuando el objeto es destruido o cuando su valor deja de ser válido.
-* *effective type*: Se refiere al tipo de dato que C considera que está almacenado en un espacio de memoria específico en un momento dado. Esta "etiqueta" invisible determina cómo el compilador puede optimizar el código y qué tipos de accesos a memoria son válidos según las reglas de strict aliasing.
-* *value*: Es el valor asignado al objeto y depende del tipo de dicho objeto. Puede ser indeterminado.
-* *identifier*: Este es el nombre que denota o identifica al objeto, y es opcional pero muy útil.
+* `size`: Tamaño del objeto o la cantidad de bytes que ocupa en memoria (sizeof).
+* `alignment requirement`: Es un valor entero de tipo `size_t` que representa la restricción de alineación que determina en qué direcciones de memoria puede comenzar un objeto de cierto tipo. Es decir, indica el múltiplo del que debe ser una dirección de memoria para poder iniciar el almacenamiento de un objeto de un tipo específico, con la intención hacer la lectura de memoria más eficiente. Llegando al punto en que el orden de declaración de variables importa.
+* `storage duration`: Se refiere al período durante el cual un espacio de memoria está reservado y disponible para un objeto. Determina cuándo el sistema asigna memoria para un objeto y cuándo esa memoria es liberada y puede ser reutilizada por el sistema para otros propósitos. En C existen cuatro categorías: automatic
+* `lifetime`: Se refiere al período durante el cual el contenido de un objeto existe y es válido en un espacio de memoria dado. Comienza cuando el objeto se inicializa con un valor y termina cuando el objeto es destruido o cuando su valor deja de ser válido.
+* `effective type`: Se refiere al tipo de dato que C considera que está almacenado en un espacio de memoria específico en un momento dado. Esta "etiqueta" invisible determina cómo el compilador puede optimizar el código y qué tipos de accesos a memoria son válidos según las reglas de strict aliasing.
+* `value`: Es el valor asignado al objeto y depende del tipo de dicho objeto. Puede ser indeterminado.
+* `identifier`: Este es el nombre que denota o identifica al objeto, y es opcional pero muy útil.
+
+### Main Function
+Cualquier programa de C hecho para ser ejecutado en un entorno hosteado (con un Sistema Operativo), debe contener la definición de una función llamada `main`, la cual, es designada como el punto de entrada para el programa. Hay dos tipos principales para su implementación:
+* Cuando la función no recibe argumentos en su ejecución:
+    ```C
+    int main(void) { /*body*/ }
+    ```
+* Cuando la función sí recibe argumentos en su ejecución:
+    ```C
+    int main(int argc, char *argv[]) { /*body*/ }
+    /* Donde:
+        - "argc (argument count)" es un valor no negativo que representa el número total de argumentos pasados al programa en su ejecución.
+        - "argv (argument vector)" es un puntero al primer elemento de un arreglo de punteros de tamaño argc + 1, donde el primer elemento argv[0] apunta al nombre del programa, los demás elementos apuntan a los strings que repesentan a los argumentos, y el último elemento argv[arc] es null.
+    */
+    ```
+En cuanto al `return` de la función main, si es explícitamente usado, llama implícitamente a `exit()`, y el valor `0` o `EXIT_SUCCESS` indican terminación exitosa, mientras que `1` o `EXIT_FAILURE` indican terminación fallida. Por otro lado, `main` es llamada en el setup del programa, después de que todos los objetos con duración de almacenamiento estática hayan sido inicializados. Además, un prototipo de esta función no puede ser proporcionado por el mismo programa.
+* Ejemplo de uso:
+    ```C
+    int main(int argc, char *argv[])
+    {
+        printf("argc = %d\n", argc);
+        for (int ndx = 0; ndx != argc; ++ndx)
+            printf("argv[%d] --> %s\n", ndx, argv[ndx]);
+        printf("argv[argc] = %p\n", (void*)argv[argc]);
+    }
+    ```
 
 ### As-if rule
 Esta regla permite al compilador hacer "trampa", o realizar cualquier tipo de transformación en el código con la intención de optimizarlo, siempre y cuando no modifique el comportamiento observable del programa. Esta regla se cumple siempre y cuando se protega lo siguiente:
@@ -219,36 +245,10 @@ Esta regla permite al compilador hacer "trampa", o realizar cualquier tipo de tr
 
 Esta regla es crucial cuando se trabaja con hardware, sistemas embebidos, o cuando las optimizaciones del compilador interfieren con el comportamiento esperado. 
 
-### Main Function
-Cualquier programa de C hecho para ser ejecutado en un entorno hosteado (con un Sistema Operativo), debe contener la definición de una función llamada *main*, la cual, es designada como el punto de entrada para el programa. Hay dos tipos principales para su implementación:
-* Cuando la función no recibe argumentos en su ejecución:
-    ```C
-    int main(void) { /*body*/ }
-    ```
-* Cuando la función sí recibe argumentos en su ejecución:
-    ```C
-    int main(int argc, char *argv[]) { /*body*/ }
-    /* Donde:
-        - "argc (argument count)" es un valor no negativo que representa el número total de argumentos pasados al programa en su ejecución.
-        - "argv (argument vector)" es un puntero al primer elemento de un arreglo de punteros de tamaño argc + 1, donde el primer elemento argv[0] apunta al nombre del programa, los demás elementos apuntan a los strings que repesentan a los argumentos, y el último elemento argv[arc] es null.
-    */
-    ```
-En cuanto al *return* de la función main, si es explícitamente usado, llama implícitamente a *exit()*, y el valor 0 o EXIT_SUCCESS indican terminación exitosa, mientras que 1 o EXIT_FAILURE indican terminación fallida. Por otro lado, *main* es llamada en el setup del programa, después de que todos los objetos con duración de almacenamiento estática hayan sido inicializados. Además, un prototipo de esta función no puede ser proporcionado por el mismo programa.
-* Ejemplo de uso:
-    ```C
-    int main(int argc, char *argv[])
-    {
-        printf("argc = %d\n", argc);
-        for (int ndx = 0; ndx != argc; ++ndx)
-            printf("argv[%d] --> %s\n", ndx, argv[ndx]);
-        printf("argv[argc] = %p\n", (void*)argv[argc]);
-    }
-    ```
-
 ### Declarations
 Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
-* *specifiers-and-qualifiers* - Especifican el tipo del declarador, por ejemplo: void, int, struct, enum, typeof etc. Se separan mediante espacios en blanco.
-* *declarators-and-initializers* - Indican el nombre de la declaración, y pueden ser acompañados por inicializadores, es decir, los valores asignados al declarador, por ejemplo: number = 5;. Se separan mediante comas.
+* `specifiers-and-qualifiers` - Especifican el tipo del declarador, por ejemplo: void, int, struct, enum, typeof etc. Se separan mediante espacios en blanco.
+* `declarators-and-initializers` - Indican el nombre de la declaración, y pueden ser acompañados por inicializadores, es decir, los valores asignados al declarador, por ejemplo: number = 5;. Se separan mediante comas.
 * Ejemplo:
     ```C
     int a, *b = NULL;
