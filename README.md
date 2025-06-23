@@ -231,7 +231,7 @@ En cuanto al `return` de la función main, si es explícitamente usado, llama im
     }
     ```
 
-### As-if rule
+### As-if rule (Observable behaviour)
 Esta regla permite al compilador hacer "trampa", o realizar cualquier tipo de transformación en el código con la intención de optimizarlo, siempre y cuando no modifique el comportamiento observable del programa. Esta regla se cumple siempre y cuando se protega lo siguiente:
 1. Objetos volátiles:
     * Antes C11: En cada "sequence point", los valores de objetos `volatile` deben estar estables.
@@ -245,7 +245,22 @@ Esta regla permite al compilador hacer "trampa", o realizar cualquier tipo de tr
 
 Esta regla es crucial cuando se trabaja con hardware, sistemas embebidos, o cuando las optimizaciones del compilador interfieren con el comportamiento esperado. 
 
-### Declarations
+### Undefined behaviour
+El estándar de C precisamente especifica todo el `observable behaviour` (comportamiento definido) de progras hechos en C, sin embargo, dicho estándar no espeficica para las siguientes categorías de comportamiento:
+* `undefined behaviour`: En este caso no existen restricciones en el comportamiento del programa, por lo que los compiladores no están obligados a diagnosticar este comportamiento, y el programa resultante tampoco está obligado a hacer algo significativo. Es decir, que no hay un comportamiento definido para todos los casos del programa y no se sabe lo que pasará exactamente.
+* `unspecified behaviour`: En este caso dos o más comportamientos son permitidos, y la implementación no está obligada a detallar los efectos de cada comportamiento. Esto significa que el resultado de cada comportamiento no especificado puede ser completamente diferente y variar aunque sea el mismo porgrama.
+* `implementation-denifed behaviour`: Este es un caso donde se da comportamiento no especificado pero donde el documento donde se encuentran las declaraciones es el que define las decisiones que se van a tomar, y por lo tanto, el resultado que se va a obtener.
+* `locale-specific behaviour`: Este es un caso donde se da un comportamiento definido por la implementación donde el comportamiento depende en el `currently chosen locale` (locale es básicamente la forma de implementar y tomar decisiones).
+
+### Memory model
+El modelo de memoria define la semántica (significado) del uso de la memoria de la computadora, como herramienta para la máquina abstracta de C. En este contexto, el almacenamiento de memoria o memoria disponible para un programa de C es una o más secuencias de `bytes` contiguos, donde cada `byte` tiene una dirección de memoria única.
+
+Por otro lado, un `byte` es la unidad de memoria más pequeña que puede tener una dirección, y son lo suficientemente largos para representar cualquier miembro del *basic character set*. C soporta bytes de 8 o más bits.
+
+## C Keywords
+[C Keywords](https://cppreference.com/w/c/keyword.html)
+
+## Declarations
 Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
 * `specifiers-and-qualifiers` - Especifican el tipo del declarador, por ejemplo: void, int, struct, enum, typeof etc. Se separan mediante espacios en blanco.
 * `declarators-and-initializers` - Indican el nombre de la declaración, y pueden ser acompañados por inicializadores, es decir, los valores asignados al declarador, por ejemplo: number = 5;. Se separan mediante comas.
@@ -259,7 +274,7 @@ Una *declaration* es un *construct* que introduce uno o más identificadores al 
     */
     ```
 
-### Definitions
+## Definitions
 Una *definition* es una declaración que provee toda la información sobre los identificadores que declara. Por ejemplo, una declaración de una función que incluye en cuerpo de dicha función, es una definición; una declaración de un objeto que aloja memoria, es una definición, similar con structs y unions.
 * Ejemplo:
     ```C
