@@ -19,7 +19,7 @@ Las definiciones de funciones incluyen secuencias de *statements* y *declaration
 [Character Sets and Encodings](https://cppreference.com/w/c/language/charset.html)
 
 ### Translation
-Un programa en C pasa por un total de ocho fases distintas para poder ser convertido en un programa ejecutable, este proceso es conocido coomo *translation* o *proceso de traducción*. Sin embargo, cabe aclarar que la implementación real puede combinar estas fases o procesarlas de distintas maneras, pero el resultado es básicamente el mismo siempre.
+Un programa en C pasa por un total de ocho fases distintas para poder ser convertido en un programa ejecutable, este proceso es conocido como `translation` o *proceso de traducción*. Sin embargo, cabe aclarar que la implementación real puede combinar estas fases o procesarlas de distintas maneras, pero el resultado es básicamente el mismo siempre.
 #### Phase 1
 En esta primera fase, los bytes individuales del archivo source, que generalmente están codificados en UTF-8, son mapeados de acuerdo a la forma de implementación definida, a los caracteres del *source character set*. Es decir, el compilador trasforma todos los caracteres del archivo a su forma normal, o a la forma en que el compilador puede entender y trabajar con esos caracteres.
 
@@ -41,7 +41,7 @@ Para la generación de los *preprocessing tokens*, se sigue la regla de *maximal
 En la cuarta fase el *proprocessor* es ejecutado, el cual, se encarga de ejecutar todas aquellas partes del código que inician con el caracter `#`, como `#include` o `#define`. Entonces, cada archivo que es introducido al archivo source, pasa por todas las fases anteriores (Phase 1 - 4) recursivamente, lo que asegura que todos los archivos a usar tengan el formato correcto y el compilador puede trabajar con ellos. Al final de esta fase, todo el código ejectutado por el *preprocessor* es eliminado del archivo source, pues es reemplazado por el resultado correspondiente.
 
 #### Phase 5
-En esta fase, todos los caracteres de escape se encuentran representados por caracteres del *source character set*, por lo que son convertidos a caracteres de *execution character set*. Es decir, que todos aquellos caracteres de escape como \n, son convertidos a caracteres que el compilador realmente puede interpretar por lo que son.
+En esta fase, todos los caracteres de escape se encuentran representados por caracteres del *source character set*, por lo que son convertidos a caracteres de *execution character set*. Es decir, que todos aquellos caracteres de escape como `\n`, son convertidos a caracteres que el compilador realmente puede interpretar por lo que son.
 
 #### Phase 6
 Esta fase es sencilla, y básicamente se encarga de contatenar *string literals* para convertir múltiples strings en un solo string.
@@ -259,6 +259,32 @@ Por otro lado, un `byte` es la unidad de memoria más pequeña que puede tener u
 
 ## C Keywords
 [C Keywords](https://cppreference.com/w/c/keyword.html)
+
+## Preprocessor
+El preprocesador es ejecutado en la fase 4 del proceso de traducción, por lo que sucede antes de la compilación. El resultado del preprocesador es un **único archivo**, el cual es pasado al compilador.
+
+Las `preprocessor directives` o directivas del preprocesador controlan su comportamiento, y cada directiva ocupa una línea y deben seguir un cierto formato:
+* Primero, va el caracter `#`.
+* Luego, el instrucción del preprocesador (`define`, `include`, etc.).
+* Argumentos de la instrucción.
+* Salto de línea.
+
+Por otro lado, el preprocesador tiene las siguientes `capabilities` o capacidades:
+* Condicionalmente compilar partes del archivo base.
+* Reemplazar macros en texto.
+* Incluir otros archivos.
+* Arrojar errores o advertencias.
+
+### Conditional directives
+
+### Replacement directives
+
+### Inclusion directives
+
+### Implementation-defined directives
+
+### Informative directives
+
 
 ## Declarations
 Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
