@@ -1,4 +1,5 @@
-#include <stdio.h> // Input-Output library.
+#define ABCD 2
+#include <stdio.h> // Makes the preprocessor search for the file in the system.
 
 int foo(double x) { return x; } // Function definition.
 
@@ -34,6 +35,20 @@ int main(int argc, char *argv[])
     printf("Int size: %d bytes OR %d bits\n", int_size, int_size * 8);
     int long_size = (int)sizeof(longy);
     printf("Long size: %d bytes OR %d bits\n", long_size, long_size * 8);
+
+    #ifdef ABCD
+        printf("1: yes\n");
+    #else
+        printf("1: no\n");
+    #endif
+
+    #ifndef ABCD
+        printf("2: no\n");
+    #elif ABCD == 2
+        printf("2: yes\n");
+    #else
+        printf("2: no\n")
+    #endif
 
     return 0;
 }

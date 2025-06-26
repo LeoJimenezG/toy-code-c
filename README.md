@@ -276,14 +276,76 @@ Por otro lado, el preprocesador tiene las siguientes `capabilities` o capacidade
 * Arrojar errores o advertencias.
 
 ### Conditional directives
+El preprocesador soporta compilación condicional de partes del archivo principal. Este comportamiento es controlado por las siguientes directivas:
+* `#if`
+* `#else`
+* `#elif`
+* `#ifdef`
+* `#ifndef`
+* `#elifdef`
+* `#elifndef`
+* `#endif`
+
+El bloque de preprocesamiento condicional se estructura de la siguiente manera:
+1. Inicia con una directiva como: `#if`, `#ifdef`, or `#ifndef`.
+2. Luego, incluye cualquier cantidad de directivas adicionales como: `#elif`, `#elifdef`, or `#elifndef`.
+3. Después, opcionalmente incluye como máximo una directiva `#else`.
+4. Finalmente, el bloque termina con la directiva `#endif`.
+
+Cualquier bloque de preprocesamiento condicional, ya sean bloques internos o no, son procesados individualmente, y las directivas usadas controlan completamente el comportamiento. Funcionan básicamente como los *if* tradicionales pero para el preprocesador.
+
+Además, es importante tener en cuenta que las directivas solo pueden y deben usar `constants` o `identifiers`. En el caso de las constantes no hay problema en cuanto a su declaración, pues son globales, pero para los identificadores, deben ser definidos usando `#define` para que las directivas condicionales las puedan usar.
 
 ### Replacement directives
+El preprocesador puede realizar reemplazo de macros, ya sea reemplazo por texto simple o reemplazo en forma de función. Las siguientes directivas son usadas para esto:
+* `define`
+* `undef`
+
+En este contexto, una macro es una definición de texto, básicamente un identificador, que el preprocesador sustituye por algún valor definido o por alguna función también definida. Ejemplos:
+* Text macro: El preprocesador reemplaza el identificador por el valor asignado, por lo que no ocupa memoria.
+    ```C
+    #define PI 3.14159
+    #define MAX_SIZE 100
+    ```
+* Function-like macro: Igualmente, el preprocesador únicamente reemplaza el identificador y sus parámetros por la evaluación que se realiza dentro de la macro. Para este tipo de macros, existen dos operadores muy útiles, `#` para convertir a string y `##` para concatenar.
+    ```C
+    #define MAX(a, b) ((a) > (b) ? (a) : (b))
+    #define FUNCTION(name, a) int func_##name(int x) { return (a) * x; }
+    ```
 
 ### Inclusion directives
+En esta categoría solo existe la directiva `#include`, que básicamente incluye otro archivo con código dentro del archivo donde se está usando dicha directiva. Esta inclusión sucede inmediatamente en la siguiente línea de la directiva.
+
+Existen dos formas de utilizar esta directiva, dependiendo completamente de la sintáxis:
+* `""`: Esta sintáxis obliga al preprocesador a buscar los archivos en el directorio actual, y si no los encuentra, los busca en el sistema.
+* `<>`: Esta sintáxis obliga al preprocesador a buscar los archivos en el sistema directamente, por lo que es el segundo paso si la búsqueda con la sintáxis anterior falla.
 
 ### Implementation-defined directives
+El comportamiento definido por la implementación es controlado únicamente por la directiva `#pragma`. Esta directiva controla la implementación específica de un archivo que el compilador debe realizar, como deshabilitar advertencias del compilador, cambiar los requirimientos, etc., y cualquier uso de esta que no sea reconocido es ignorado.
 
 ### Informative directives
+En esta categoría se tiene la directiva `#line` que sirve para cambiar la línea actual y el nombre del archivo en el preprocesador.
+
+También, existen las directivas `#error` y `#warning`. Estas directivas muestran el error o advertencia, respectivamente, que se especifica y se renderiza el programa ignorando dicha información.
+
+## Statements
+### If
+
+### Switch
+
+### For
+
+### While
+
+### Do-While
+
+### Continue
+
+### Break
+
+### Goto
+
+### Return
 
 
 ## Declarations
