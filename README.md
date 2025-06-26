@@ -318,7 +318,13 @@ En esta categoría solo existe la directiva `#include`, que básicamente incluye
 
 Existen dos formas de utilizar esta directiva, dependiendo completamente de la sintáxis:
 * `""`: Esta sintáxis obliga al preprocesador a buscar los archivos en el directorio actual, y si no los encuentra, los busca en el sistema.
+    ```C
+    #include "my_header_file.h"
+    ```
 * `<>`: Esta sintáxis obliga al preprocesador a buscar los archivos en el sistema directamente, por lo que es el segundo paso si la búsqueda con la sintáxis anterior falla.
+    ```C
+    #include <stdio.h>
+    ```
 
 ### Implementation-defined directives
 El comportamiento definido por la implementación es controlado únicamente por la directiva `#pragma`. Esta directiva controla la implementación específica de un archivo que el compilador debe realizar, como deshabilitar advertencias del compilador, cambiar los requirimientos, etc., y cualquier uso de esta que no sea reconocido es ignorado.
