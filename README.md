@@ -335,23 +335,138 @@ En esta categoría se tiene la directiva `#line` que sirve para cambiar la líne
 También, existen las directivas `#error` y `#warning`. Estas directivas muestran el error o advertencia, respectivamente, que se especifica y se renderiza el programa ignorando dicha información.
 
 ## Statements
+Los *statements* o sentencias son fragmentos de cualquier programa de C que son ejecutados secuencialmente, es decir, uno tras otro siguiendo un orden. Existen cinco tipos de sentencias en C:
+* `compound statements`: También conocidos como *blocks* o bloques, son secuencias de sentencias y declaraciones entre llaves `{}`, por lo que crean su propio scope y permiten agrupar múltiples sentencias. Ejemplo:
+    ```C
+    if (expr)
+    {
+        int n = 1;
+        printf("%d\n", n);
+    }
+    ```
+* `expression statements`: Estas sentencias son seguidas por `;`, incluyen asignaciones, declaraciones, definiciones y llamadas a funciones. Ejemplo:
+    ```C
+    printf("statement");
+    ```
+* `selection statements`: Las sentencias de selección eligen una única sentencia de varias basándose en el resultado de una expresión. Ejemplo:
+    ```C
+    if (expression) {
+        // Hacer algo
+    }
+    else {
+        // Hacer otro algo
+    }
+    switch (expression) {
+        case 1:
+            break;
+        default:
+            // Hacer algo
+    }
+    ```
+* `iteration statements`: Las sentencias iterativas ejecutan repetidamente una sentencia. Ejemplo:
+    ```C
+    while (expression) {
+        // Hacer algo
+    }
+    for (expression) {
+        // Hacer algo
+    }
+    do {
+        // Hacer algo
+    } while (expression);
+    ```
+* `jump statements`: Las sentencias de salto transfieren el flujo de control incondicionalmente. Ejemplo:
+    ```C
+    break;
+    continue;
+    return;
+    goto;
+    ```
+
 ### If
+La sentencia `if` ejecuta código condicionalmente, y se usa donde el código necesita ser ejecutado únicamente cuando alguna condición se cumpla. Ejemplo:
+```C
+int j = 1;
+if (j > 2) {
+    printf("%d > 2\n", j);
+}
+else {
+    printf("%d < 2\n", j);
+}
+```
 
 ### Switch
+La sentencia `switch` ejecuta código de acuerdo al valor de un argumento. Es importante notar que esta sentencia únicamente redirige el flujo de ejecución al `case` donde la expresión se cumple y continúa ejecutando secuencialmente, por lo que es importante tener el cuenta el concepto de `fall-through`. Ejemplo:
+```C
+int k = 2;
+switch (k) {
+    case 1:
+        printf("Case 1\n");
+        break;
+    case 2:
+        printf("Case 2 and");
+    case 3:
+        printf(" Case 3\n");
+        break;
+    default:
+        printf("Case 0\n");
+}
+```
 
 ### For
+La sentencia `for` ejecuta un bucle, y es un equivalente corto al bucle *while*. Cabe mencionar que se puede combinar con otras palabras clave como `break`, `continue`, `return`, etc. Ejemplo:
+```C
+for (int i = 0; i < 10; ++i) {
+    // La primera parte se ejecuta antes de iniciar el bucle.
+    // La segunda parte se ejecuta antes de cualquier iteración.
+    // La tercera parte se ejecuta después de cualquier iteración.
+}
+```
 
 ### While
+La sentencia `while` ejecuta código repetidamente hasta que el resultado de una expresión ya no secumpla o se convierta en 0, y dicho resultado se checa antes de cualquier iteración. De igual forma, se puede combinar con otras palabras clave. Ejemplo:
+```C
+int n = 0;
+while (n < 10) {
+    printf("Iteration: %d\n", n);
+    ++n;
+}
+```
 
 ### Do-While
+La sentencia `do-while` ejecuta código repetidamente hasta que el resultado de una expresión ya no se cumpla o se convierta en 0, y dicho resultado se checa después de cualquier iteración. Se puede combinar también con otras palabras clave. Ejemplo:
+```C
+int m = 0;
+do {
+    printf("Iteration: %d\n", m);
+    ++m;
+} while (m < 10);
+```
 
 ### Continue
+La sentencia `continue` provoca que el código restante después de dicha sentencia dentro de algún bucle sea ignorado, y por lo tanto, no sea ejecutado. Básicamente ignora lo que resta de una iteración sin terminar por completo el bucle.
 
 ### Break
+La sentencia `break` hace que la sentencia donde es usado termine completamente, ignorando el código y/o las iteraciones restantes. Esta sentencia puede ser usada dentro de bucles o de switches.
 
 ### Goto
+La sentencia `goto` transfiere el control incondicionalmente a la ubicación deseada, la cual es especificada por algún `label`. En este contexto, un label es un `identifier` seguido por `:` y tienen el mismo scope que una función. Ejemplo:
+```C
+int main(void)
+{
+    for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 3; y++) {
+            printf("(%d;%d)\n",x,y);
+            if (x + y >= 3) goto endloop;
+        }
+    }
+endloop:; // identifier "endloop" + ":" = "endloop:";
+// goto es muy útil para salir de bucles anidados.
+}
+```
 
 ### Return
+La sentencia `return` finaliza la función donde se está utilizando y devuelve el valor especificado al lugar u objeto que llamó a dicha función.
 
 
 ## Declarations

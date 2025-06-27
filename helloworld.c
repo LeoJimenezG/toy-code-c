@@ -50,5 +50,32 @@ int main(int argc, char *argv[])
         printf("2: no\n")
     #endif
 
+    int k = 2;
+    switch (k) {
+        case 1:
+            printf("Case 1\n");
+            break;
+        case 2:
+            printf("Case 2 and");
+        case 3:
+            printf(" Case 3\n");
+            break;
+        default:
+            printf("Case 0\n");
+    }
+
+    int n1 = 0;
+    while (n1 < 10) {
+        printf("Iteration: %d\n", n1);
+        ++n1;
+    }
+
+    int n2 = 0;
+    do {
+        printf("Iteration: %d\n", n2);
+        ++n2;
+    } while (n2 < 10);
+
     return 0;
+
 }
