@@ -484,8 +484,8 @@ El orden de evaluación de los operandos de cualquier operador de C no está esp
 
 #### Evaluations
 Existen dos tipos de evaluaciones realizadas por el compilador para cada una de las expresiones:
-* *value computation*: Es el valor calculado que es regresado por la expresión. Puede ser un lvalue o un non-lvalue.
-* *side effect*: Puede ser acceder a un objeto, modificar un objeto o archivo, o llamar a una función que realiza cualquiera de estas operaciones.
+* `value computation`: Es el valor calculado que es regresado por la expresión. Puede ser un lvalue o un non-lvalue.
+* `side effect`: Puede ser acceder a un objeto, modificar un objeto o archivo, o llamar a una función que realiza cualquiera de estas operaciones.
 Cabe mencionar que, si no se producen efectos por la expresión o el compilador determina que el valor de la expresión no es utilizado, dicha expresión puede no ser evaluada.
 #### Ordering
 Las evaluaciones de expresiones que están secuenciadas (*sequenced-before*) dentro del mismo hilo, se caracterizan por ser asimétricas, transitivas y en pares. Por lo tanto, cuando se tienen expresiones secuenciadas, se sigue lo siguiente:
@@ -498,16 +498,16 @@ Las evaluaciones de expresiones que están secuenciadas (*sequenced-before*) den
 [14 Rules](https://en.cppreference.com/w/c/language/eval_order.html#Rules)
 #### Undefined behaviour
 * Si el efecto secundario en un objeto está junto con otro efecto secundario del mismo objeto dentro de la misma expresión, se da un comportamiento indefinido. Ejemplo:
-```C
-i = ++i + i++;
-i = ++i + 1;
-fnc(++i, ++i);
-```
+    ```C
+    i = ++i + i++;
+    i = ++i + 1;
+    fnc(++i, ++i);
+    ```
 * Si el efecto secundario en un objeto está junto con el uso del valor del mismo objeto dentro de la misma expresión, se da un comportamiento indefinido. Ejemplo:
-```C
-f(i, i++);
-a[i] = i++;
-```
+    ```C
+    f(i, i++);
+    a[i] = i++;
+    ```
 
 ### Operators
 [Expresssion operators](https://cppreference.com/w/c/language/operators.html#Operators)
