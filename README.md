@@ -468,6 +468,72 @@ endloop:; // identifier "endloop" + ":" = "endloop:";
 ### Return
 La sentencia `return` finaliza la función donde se está utilizando y devuelve el valor especificado al lugar u objeto que llamó a dicha función.
 
+## Expressions
+Una expresión es una secuencia de operadores y operandos que especifican una tarea computacional. La evaluación de una expresión puede generar un resultado, efectos variados o designar objetos o funciones.
+
+Los operandos de cualquier operador pueden ser otras expresiones o *primary expressions* (constantes y literales, identificadores o palabras clave y *generic selections*). Cualquier expresión que esté dentro de paréntesis también es clasificada como una primary expression, lo que garantiza que tendrá mayor precedencia que cualquier otro operador.
+
+### Value categories
+Cualquier expresión en C is caracterizada por dos propiedades independientes: un `type` y una `value category`. Por lo tanto, toda expresión pertenece a una de tres *value categories*:
+* **`Lvalue expressions`**: Cualquier expresión donde su tipo de objeto es cualquiera diferente al tipo `void`, en otras palabras, aquellas que designan objetos (ubicaciones de memoria) de cualquier tip. A esta categoría también se le conoce como `left value`, pues refleja el uso de *lvalue expressions*. 
+* **`Non-Lvalue expressions`**: También conocidas como `rvalues`, son aquellas expresiones que no designan objetos, es decir, que representan valores que no son almacenados en memoria, por lo que no se puede acceder o utilizar su dirección de memoria. 
+* **`Function designator expressions`**: Son aquellas expresiones de tipo función que se refieren a funciones específicas. Este tipo de expresiones siempre son convertidas a punteros de categoría *non-lvalue* que apuntan a una función.
+
+### Evaluation order
+El orden de evaluación de los operandos de cualquier operador de C no está especificado (a excepción de ciertos casos). Por lo que el compilador evaluará a las expresiones en cualquier orden, y puede elegir un orden u otro incluso cuando sea la misma expresión. Además, en C no existe en concepto de evaluación *left-to-right* o *right-to-left*.
+
+#### Evaluations
+Existen dos tipos de evaluaciones realizadas por el compilador para cada una de las expresiones:
+* *value computation*: Es el valor calculado que es regresado por la expresión. Puede ser un lvalue o un non-lvalue.
+* *side effect*: Puede ser acceder a un objeto, modificar un objeto o archivo, o llamar a una función que realiza cualquiera de estas operaciones.
+Cabe mencionar que, si no se producen efectos por la expresión o el compilador determina que el valor de la expresión no es utilizado, dicha expresión puede no ser evaluada.
+#### Ordering
+Las evaluaciones de expresiones que están secuenciadas (*sequenced-before*) dentro del mismo hilo, se caracterizan por ser asimétricas, transitivas y en pares. Por lo tanto, cuando se tienen expresiones secuenciadas, se sigue lo siguiente:
+* Si existe un *sequence point* (garantiza que los efectos secuandarios son hechos antes) entre expresiones E1 y E2, entonces todo el procesamiento de E1 se da antes de procesar E2.
+* Si la evaluación A está secuenciada antes que la evaluación B, la evaluación de A se completará antes de iniciar con la evaluación de B. Y viceversa.
+* Si la evaluación A y la evaluación B no están secuenciadas y son independientes, se pueden dar dos casos:
+    * La evaluación de A y de B suceden en cualquier orden y se pueden dar al mismo tiempo.
+    * La evaluación A y B son secuenciadas en cualquier orden, pero una se evalúa antes que otra siempre.
+#### Rules
+[14 Rules](https://en.cppreference.com/w/c/language/eval_order.html#Rules)
+#### Undefined behaviour
+* Si el efecto secundario en un objeto está junto con otro efecto secundario del mismo objeto dentro de la misma expresión, se da un comportamiento indefinido. Ejemplo:
+```C
+i = ++i + i++;
+i = ++i + 1;
+fnc(++i, ++i);
+```
+* Si el efecto secundario en un objeto está junto con el uso del valor del mismo objeto dentro de la misma expresión, se da un comportamiento indefinido. Ejemplo:
+```C
+f(i, i++);
+a[i] = i++;
+```
+
+### Operators
+[Expresssion operators](https://cppreference.com/w/c/language/operators.html#Operators)
+
+### Operator precedence
+[C Operator Precedence](https://cppreference.com/w/c/language/operator_precedence.html)
+
+### Generic selection
+La selección genérica provee una forma de elegir una de múltiples expresiones en tiempo de compilación, y se basa en un tipo de expresiones de control.
+
+Se utiliza la sintáxis **_Generic(*controlling-expression*, *association-list*)**, donde:
+* `_Generic()` es simplemente la palabra clave.
+* `controlling-expression` es la expresión a controlar.
+* `association-list` es la lista de asociaciones separadas por comas.
+
+Ejemplo:
+```C
+// Possible implementation of the tgmath.h macro cbrt
+#define cbrt(X) _Generic((X),     \
+              long double: cbrtl, \
+                  default: cbrt,  \
+                    float: cbrtf  \
+              )(X)
+```
+
+## Initialization
 
 ## Declarations
 Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
