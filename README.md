@@ -596,21 +596,22 @@ struct Point p = {};  // x=0, y=0
 En cuanto a las unions, solo es posible inicializar un miembro, y por defecto es el primer elemento a menos de que se utilicen designators.
 
 ## Declarations
-Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
-* `specifiers-and-qualifiers` - Especifican el tipo del declarador, por ejemplo: void, int, struct, enum, typeof etc. Se separan mediante espacios en blanco.
-* `declarators-and-initializers` - Indican el nombre de la declaración, y pueden ser acompañados por inicializadores, es decir, los valores asignados al declarador, por ejemplo: number = 5;. Se separan mediante comas.
+Una declaración es un constructo que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier scope, y consisten de dos partes obligatorias:
+* `specifiers-and-qualifiers`: Especifican el tipo del declarador, por ejemplo: void, int, struct, enum, typeof etc. Se separan mediante espacios en blanco.
+* `declarators-and-initializers`: Indican el nombre del identificador y/o información adicional sobre el tipo del objeto, y pueden ser acompañados por inicializadores. Se separan mediante comas.
 * Ejemplo:
     ```C
     int a, *b = NULL;
     /* Donde:
-        - "int" es el "type specifier"
-        - "a" y "*b" son los "declarator"
+        - "int" es el "type specifier".
+        - "a" es el "identifier".
+        - "*b" proporciona más información sobre el tipo.
         - "NULL" es el "initializer" para ambos declarators.
     */
     ```
 
-## Definitions
-Una *definition* es una declaración que provee toda la información sobre los identificadores que declara. Por ejemplo, una declaración de una función que incluye en cuerpo de dicha función, es una definición; una declaración de un objeto que aloja memoria, es una definición, similar con structs y unions.
+### Definitions
+Una definición es una declaración que provee toda la información sobre los identificadores que declara. Por ejemplo, una declaración de una función que incluye en cuerpo de dicha función, es una definición; una declaración de un objeto que aloja memoria, es una definición, similar con structs y unions.
 * Ejemplo:
     ```C
     int foo(double x) { return x; } // Function definition
