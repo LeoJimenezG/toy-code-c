@@ -534,6 +534,66 @@ Ejemplo:
 ```
 
 ## Initialization
+Una declaración de un objeto puede incluir su valor inicial mediante el proceso de `initialization`, pues el *initializer* o inicializador especifica el valor inicial almacenado en un objeto. Existen tres tipos de inicialización:
+* scalar initialization
+* array initialization
+* struct/union initialization
+
+Cuando un objeto no es explícitamente inicializado, **en algunos casos** se le asigna un valor automáticamente que preresenta en vacío del tipo de ese objeto. Por ejemplo, un objeto de tipo entero es inicializado con un cero unsigned, objetos de tipo flotante son inicializados con un cero positivo, etc.
+
+### Scalar initialization
+Se refiere a la inicialización de objetos de tipo escalar, es decir asignar valores iniciales a variables de tipos básicos, como enteros, flotantes, booleanos, caracteres y punteros. Existen tres tipos de sintáxis que se pueden usar:
+```C
+int x = 5;  // Inicialización directa.
+int y = {10};  // Inicialización con llaves.
+int z = {};  // Inicialización en 0 (depende del type).
+```
+
+Es importante notar que los valor correspondiente al inicializador es convertido al tipo correspondiente al objeto que se está inicializando, siempre y cuando la conversión se pueda dar. Por ejemplo:
+```C
+int i = 3.14;  // double se convierte en int.
+float f = 5;  // int se convierte en float.
+char c = 65;  // 65 se convierte en el caracter número 65 (A).
+```
+
+### Array initialization
+La inicialización de arreglos se puede dar de dos formas: usando cadenas de caracteres, para el caso de un string `char s[]`; o usando listas entre llaves `{}`.
+
+Es importante tener en cuenta que:
+* Los elementos no inicializados se les da el valor de 0, dependiendo del tipo del arreglo.
+* No se pueden proporcionar más inicializadores que el total de elementos de un arreglo.
+* Que el tamaño de los arreglos de tamaño desconocido es determinado por el índice más alto inicializado.
+* Y que los arrays estáticos (como cualquier otro valor global o estático) requiren expresiones constantes.
+
+Ejemplos:
+```C
+int arr[] = {1, 2, 3};  // Tamaño automático.
+int arr[5] = {1, 2, 3};  // Tamaño de 5, y los elementos restantes son igual a 0.
+int arr[5] = {};  // Tamaño de 5 y todos los elementos son igual a 0.
+
+char str[] = "hello";  // Arreglo de tamaño 5 + 1, donde el último es '\0'.
+char str[5] = "hello";  // Arreglo de tamaño 5.
+
+int arr[5] = {[0]=1, [4]=5};  // arr = {1, 0, 0, 0, 5}.
+
+int matrix[3][2] = {
+    {1, 2},
+    {3, 4},
+    {5, 6}
+};
+int matrix[3][2] = {1, 2, 3, 4, 5, 6};
+```
+
+### Struct/Union initialization
+La inicialización de structses muy parecida a la inicialización de los arrays, con la diferencia de que el orden de declaración de los miembros de una struct sí influye en el momento de la inicialización. Las mismas consideraciones de los arrays aplican en las structs. Ejemplos:
+```C
+struct Point {int x, y;};
+struct Point p = {10, 20};  // x=10, y=20
+struct Point p = {.x=10, .y=20};  // x=10, y=20
+struct Point p = {};  // x=0, y=0
+```
+
+En cuanto a las unions, solo es posible inicializar un miembro, y por defecto es el primer elemento a menos de que se utilicen designators.
 
 ## Declarations
 Una *declaration* es un *construct* que introduce uno o más identificadores al programa, y especifica su significado y propiedades. Estas pueden aparecer en cualquier *scope*, y consisten de dos partes obligatorias:
