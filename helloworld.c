@@ -5,7 +5,10 @@ int foo(double x) { return x; } // Function definition.
 
 struct T { double a[4]; };
 struct T f(void) { return (struct T){3.15}; }
+
 double g1(double* x) { return *x; }
+
+enum Colors { RED, GREEN, BLUE };
 
 // Entry point or main function.
 int main(int argc, char *argv[])
@@ -76,6 +79,22 @@ int main(int argc, char *argv[])
         ++n2;
     } while (n2 < 10);
 
-    return 0;
+    enum Colors color = GREEN;
 
+    switch (color) {
+        case RED:
+            printf("Color RED: %d\n", color);
+            break;
+        case GREEN:
+            printf("Color GREEN: %d\n", color);
+            break;
+        case BLUE:
+            printf("Color BLUE: %d\n", color);
+            break;
+        default:
+            printf("Color WHITE: %d\n", color);
+            break;
+    }
+
+    return 0;
 }

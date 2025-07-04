@@ -619,3 +619,105 @@ Una definición es una declaración que provee toda la información sobre los id
     struct X { int m; } // Struct definition
     ```
 
+### Pointer declaration
+Un puntero es un tipo de objeto que se refiere a una función o un objeto de otro tipo, incluso, puede referirse a nada mediante el uso de `NULL`. Para declarar un puntero se utilizan tres elementos fundamentales:
+* El tipo al que apunta el puntero.
+* El símbolo de puntero `*`.
+* El identificador o nombre del puntero.
+
+Es importante recalcar el uso del símbolo `*`, pues puede tener diferentes usos. En la declaración de un puntero, sirve para indicar que se está declarando un puntero; pero su uso fuera de una declaración sirve para indicar que se está trabajando con el valor del objeto al que el puntero hace referencia. Además, la sintáxis de la declaración de un puntero es crucial, pues la posición de los elementos influye directamente en el funcionamiento del puntero.
+
+Ejemplos:
+```C
+/* ------------------------------------------------------------------------------------------------------------- */
+void *pv = NULL;  // Puntero que hare referencia a nada.
+/* ------------------------------------------------------------------------------------------------------------- */
+int n;  // Objeto de tipo int.
+int *pn = &n;  // Puntero que hace referencia a un objeto de tipo int.
+*pn = 7;  // Trabaja con el valor del objeto al que el puntero hace referencia.
+/* ------------------------------------------------------------------------------------------------------------- */
+int a[2];  // Array de dos elementos.
+int *pa = a;  // Puntero que hace referencia al primer elemento de un arreglo de tipo int.
+/* ------------------------------------------------------------------------------------------------------------- */
+int v() { return 37; }  // Función de tipo int que no recibe argumentos.
+int (*pf1)() = v;  // Puntero que hace referencia a una función de tipo int que no recibe argumentos.
+(*pf1)();  // Llamada a la función que hace referencia desreferenciando el puntero.
+pf1();  // Llamada a la función que hace referencia directamente desde el propio puntero.
+/* ------------------------------------------------------------------------------------------------------------- */
+int f(int x) { return (x + 1) * 2; }  // Función de tipo int que recibe un int.
+int (*pf2)(int) = f;  // Puntero que hace referencia a una función de tipo int que recibe un argumento de tipo int.
+/* ------------------------------------------------------------------------------------------------------------- */
+```
+
+### Array declaration
+Un array es un tipo de objeto que consiste de espacios de memoria alojados contiguamente que contienen objetos no vacíos de cierto tipo. Es decir, que un array es memoria contigua que almacena elementos de un tipo específico. Además, el tamaño del array nunca cambia en todo su tiempo de vida.
+
+Existen tres tipos de arrays que se diferencían por su tamaño:
+* `Arrays of constant known size`: Son aquellos arrays que su tamaño o la expresión que define su tamaño es constante y mayor que 0, y pueden ser inicializados como normalmente. Ejemplo:
+    ```C
+    int n[10];  // Array de 10 elementos de tipo int.
+    int n[3] = {1, 2, 3};  // Array de 3 elementos de tipo int, con inicializadores.
+    char s[] = "abc";  // Array de 4 elementos de tipo char, donde el último elemento es '\0'.
+    ```
+* `Variable-length arrays (VLA)`: Son aquellos arrays cuya expresión que define su tamaño es evaluada únicamente en tiempo de ejecución, por lo que deben tener una duración automática y no pueden ser `static`, `extern` o `global`. Además, no pueden ser usados en `struct` o en `unions` Ejemplo:
+    ```C
+    int x = 10;
+    int a[x];  // El tamaño es determinado en tiempo de ejecución.
+    ```
+* `Arrays of unknown size`: Son aquellos arrays donde su tamaño o la expresión que define su tamaño es omitida, por lo que su tamaño es definido por otras características o simplemente no es definido. Ejemplo:
+    ```C
+    extern int x[];  // El tamaño del array es desconocido.
+    int a[] = {1, 2, 3};  // Se infiere el tamaño del array por sus elementos (3).
+    ```
+
+Es importante saber que los arrays se convierten automáticamente a punteros en la mayoría de contextos (conversión array-a-puntero). En esta conversión, el nombre del array se convierte en un puntero al primer elemento, pero el array en sí mismo no es un puntero, sino un bloque contiguo de memoria.
+
+Más ejemplos:
+```C
+void func1(int arr[static 10]) {
+    // El uso de static garantiza que el array es de al menos 10 elementos pero no limitado a esa cantidad.
+}
+
+void func2(int a[restrict], int b[restrict]) {
+    // El uso de restrict garantiza que a y b no se superponen, es decir, que no comparten los mismos espacios de memoria.
+}
+
+void func3(double a[static restrict 100], double b[static restrict 100]) {
+    // El uso de static y restrict garantiza que los arreglos son de al menos 100 elementos y que no se superponen.
+}
+
+void func4(int rows, int cols, int matrix[rows][cols]) {
+    // Uso de VLA (variable-length arrays) dentro de un function scope.
+}
+
+int* func5(int size) {
+    int *arr = malloc(size * sizeof(int));
+    return arr;  // Retorna un puntero que hace referencia al array creado dinámicamente.
+}
+```
+
+### Enumerations
+Un tipo enumerado es un tipo diferente cuyo valor es un valor de su tipo subyacente, que incluye los valores de constantes explícitamente nombradas, conocidas como **constantes de enumeración**. Son prácticamente parecidas a la directiva del preprocesador `#define`, pero con algunos cambios:
+* Si no se especifican los valores de las constantes de enumeración, toman el valor anterior más uno (+1), donde el primer valor de cualquier constante de enumeración no especificado es 0.
+* Cada constante de enumeración se convierte en una constante entera de tipo int, es decir, que se convierten en números.
+* Un enum es compatible con tipos char, int y uint. Y, como son enteros, pueden usarse en conversiones implícitas y operadores aritméticos.
+* Los enums son únicamente visibles en el scope donde son declarados.
+
+Ejemplos:
+```C
+enum State { IDLE, RUNNING, STOPPED, ERROR };
+enum State machine_state = IDLE;  // Equivale a 0.
+
+switch (machine_state) {
+    case IDLE: printf("Esperando...\n"); break;
+    case RUNNING: printf("Ejecutando...\n"); break;
+    case ERROR: printf("Error!\n"); break;
+}
+
+struct Machine {
+    char version[5];
+    enum State state;
+}
+```
+
+### Storage duration and Linkage
