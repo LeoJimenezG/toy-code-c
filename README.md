@@ -723,6 +723,7 @@ struct Machine {
 ### Storage duration
 **Nota: Es importante entender que *storage duration* y *lifetime* son conceptos similares, sin embargo, el primero se refiere al tiempo en que un espacio de memoria se utiliza para cierto objeto; mientras que el segundo se refiere al valor almacenado en ese espacio de memoria reservado para dicho objeto.**
 
+
 Todo objeto tiene una propiedad llamada *storage duration* o duración de almacenamiento, la cual limita el *lifetime* o tiempo de vida del valor de dicho objeto. Existen cuatro tipos de duración de almacenamiento:
 * `automatic storage duration`: Este tipo hace que la duración de almacenamiento de los objetos dependan completamente del bloque donde son declarados, pues son asignados cuando se entra al bloque y desasignados cuando el bloque termina por cualquier razón. Cuando se usa recursividad para entrar a un bloque se hacen nuevas asignaciones que dependen del nuevo nivel de recursividad, y esto aplica para cualquier objeto no estático.
 * `static storage duration`: Este tipo hace que la duración de almacenamiento de un objeto sea la duración de ejecución de todo el programa, es decir, que su asignación sucede una vez antes de llamar a la función main y se encuentran en la misma dirección de memoria durante todo el tiempo que el programa es ejecutado.
