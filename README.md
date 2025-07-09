@@ -720,4 +720,69 @@ struct Machine {
 }
 ```
 
-### Storage duration and Linkage
+### Storage duration
+**Nota: Es importante entender que *storage duration* y *lifetime* son conceptos similares, sin embargo, el primero se refiere al tiempo en que un espacio de memoria se utiliza para cierto objeto; mientras que el segundo se refiere al valor almacenado en ese espacio de memoria reservado para dicho objeto.**
+Todo objeto tiene una propiedad llamada *storage duration* o duración de almacenamiento, la cual limita el *lifetime* o tiempo de vida del valor de dicho objeto. Existen cuatro tipos de duración de almacenamiento:
+* `automatic storage duration`: Este tipo hace que la duración de almacenamiento de los objetos dependan completamente del bloque donde son declarados, pues son asignados cuando se entra al bloque y desasignados cuando el bloque termina por cualquier razón. Cuando se usa recursividad para entrar a un bloque se hacen nuevas asignaciones que dependen del nuevo nivel de recursividad, y esto aplica para cualquier objeto no estático.
+* `static storage duration`: Este tipo hace que la duración de almacenamiento de un objeto sea la duración de ejecución de todo el programa, es decir, que su asignación sucede una vez antes de llamar a la función main y se encuentran en la misma dirección de memoria durante todo el tiempo que el programa es ejecutado.
+* `thread storage duration`: Este tipo hace que la duración de almacenamiento de los objetos dependan completamente del tiempo de ejecución del *thread* o hilo donde son usados, y su inicialización se realiza cuando el hilo empieza.
+* `allocated storage duration`: Este tipo permite asignar y desasignar memoria a como sea necesario, mediante el uso de las funciones para la asignación de memoria dinámica. Es decir, que este tipo es completamente dependiente de cómo sea usado por el programador.
+
+Ejemplo:
+```C
+int global_var;              // static storage duration
+_Thread_local int tls_var;   // thread storage duration
+
+void func() {
+    int local_var;           // automatic storage duration
+    static int static_var;   // static storage duration
+    int *ptr = malloc(sizeof(int)); // allocated storage duration
+}
+```
+
+### Linkage
+Este concepto se refiere a la capacidad de un identificador para ser utilizado en otros scopes o niveles. En C, se reconocen los siguientes tipos de *linkages*:
+* `no linkage`: En este tipo los identificadores pueden ser utilizados únicamente dentro del nivel donde se encuentran, por ejemplo, a nivel de bloque. Todos los identificadores que no especifiquen un comportamiento diferente, incluyendo parámetros de la función utilizan este tipo de linkage.
+* `internal linkage`: En este tipo los identificadores pueden ser utilizados desde cualquier nivel que se encuentre en la misma unidad de traducción (archivo). Todas las variables y funciones declaradas a nivel de archivo usando `static` o `constexpr` utilizan este tipo de linkage.
+* `external linkage`: En este tipo los identificadores pueden ser utiizados desde cualquier otra unidad de traducción (archivo) que pertenezca al propio programa. Todas las variables y funciones declaradas a nivel de archivo que no usan `static` o `constexpr` utilizan este tipo de linkage.
+
+### Storage-class specifiers
+Existen cuatro `storage-class specifiers`:
+* `auto`: automatic storage duration.
+    * Este especificador solo está permitido para objetos declarados dentro de un *block scope* sin incluir las listas de parámetros de funciones. Indica que *storage duration* es automático y no hay *linkage*.
+* `register`: automatic storage duration.
+    * Este especificador solo está permitido para objetos declarados dentro de un *block scope* incluyendo las listas de parámetros de funciones. Indica que *storage duration* es automático y no hay *linkage*, además, indica al optimizador que debe guardar el valor del objeto en un registro del CPU cuando sea posible, y por lo tanto, no se puede usar su dirección ni se puede convertir en puntero.
+* `static`: static storage duration.
+    * Este especificador está permitido para funciones y variables a nivel de bloque o archivo. Indica que *static storage duration* y hay puede haber *internal linkage* o no.
+* `extern`: static storage duration.
+     * Este especificador está permitido para declaraciones de funciones y objetos a nivel de bloque o archivo. Indica que *static storage duration* y hay *external linkage*.
+* Extras:
+    * `_Thread_local`: thread storage duration.
+    * `malloc()`/`free()`: allocated storage duration.
+
+Estos especificadores aparecen en declaraciones, y solo se puede usar uno de ellos. Usar un especificador determina dos propiedades independendientes del nombre que declaran: *storage duration* y *linkage*.
+
+Por defecto, si no se utiliza alguno de los especificadores, se asignan automáticamente:
+* `extern` para todas las funciones.
+* `extern` para objetos a nivel de archivo.
+* `auto` para objetos a nivel de bloque.
+
+Ejemplo:
+```C
+// Nivel archivo.
+int global_var;           // extern por defecto.
+static int file_var;      // static + internal linkage.
+
+// Nivel de bloque.
+void func() {
+    int local;            // auto por defecto.
+    static int s_local;   // static + no linkage.
+    register int r_var;   // register + no linkage.
+}
+```
+
+### Const
+
+### Volatile
+
+### Restrict
