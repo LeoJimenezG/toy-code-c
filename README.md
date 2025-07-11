@@ -783,8 +783,128 @@ void func() {
 }
 ```
 
-### Const
+### Const type qualifier
+Los objetos declarados usando `const` pueden ser almacenados en memoria de solo lectura por el compilador, incluso, si la dirección del objeto nunca es usada en el programa es posible que no sea  almacenado.
 
-### Volatile
+La idea de un objeto constante es que no pueda ser modificado y mantenga el mismo valor el todo el tiempo de ejecución del programa. Por lo tanto, cualquier intento de modificación resulta en error o comportamiendo indefinido.
 
-### Restrict
+Ejemplos:
+```C
+const int n = 1;  // Objeto de tipo constante.
+n = 2;  // Error porque "n" es constante.
+
+int x = 2;
+const int *p = &x;  // Puntero de int constante.
+*p = 5;  // Error porque el tipo del valor del puntero es constante.
+
+struct {int a; const int b;} s1 = {.b=1}, s2 = {.b=2};
+s1 = s2;  // Error porque objetos de tipos constante no son asignables.
+```
+
+```C
+struct s {int i; const int ci;} s;  // Un struct con un solo valor de tipo constante.
+const struct s cs;  // Los miembros del struct "cs" de tipo "s", se convierten ambos en constantes.
+```
+
+```C
+const int arr[] = {1, 2, 3, 4};  // Un array de elementos int constantes.
+```
+
+```C
+void f(double x[const], const double y[const]);
+// x es puntero constante a double
+// y es puntero constante a const double
+```
+
+### Volatile type qualifier
+Cualquier acceso para lectura o escritura de un objeto declarado con `volatile` es considerado como un efecto secundario observable, y es evaluado estrictamente de acuerdo a las reglas del modelo de ejecución.
+
+Es decir, que el uso de `volatile` evita que el compilador realice optimizaciones que asumen que el valor de un objeto no cambia. Esto es posible pues cada lectura/escritura del objeto se hace directamente en la memoria. Ejemplo:
+```C
+volatile int sensor_value;  // Indica que al compilador que el valor del objeto puede cambiar en cualquier momento del programa.
+// Sin volatile, el compilador aplicaría optimizaciones a este código.
+while (sensor_value == 0) {
+    // Hacer nada.
+}
+// Volatile asegura que el valor del objeto siempre se manipule directamente en la memoria.
+```
+
+Ejemplos:
+```C
+volatile int n = 1;
+int* p = (int*)&n;  // Cast necesario porque &n es volatile int*.
+int val = *p;       // Comportamiento indefinido por acceso no-volatile a objeto volatile.
+```
+
+```C
+struct s { int i; const int ci; } s;
+volatile struct s vs;  // "vs.i" es volatile int, "vs.ci" es const volatile int.
+```
+
+```C
+void f(volatile double x[], const volatile double y[]);
+// La función recibe punteros a datos volátiles/constantes.
+```
+
+```C
+int* p = 0;
+volatile int* vp = p;     // OK: int* → volatile int*.
+p = vp;                   // Error: pérdida de volatile.
+p = (int*)vp;            // OK: cast explícito.
+```
+
+### Restrict type qualifier
+El uso de `restrict` solo aplica para los punteros, y se encarga de informar al compilador que si un objeto es modificado mediante un puntero de tipo `restrict`, todos los accesos a ese objeto deben ser realizados utilizando única y restrictivamente el puntero usado inicialmente. Lo que permite al compilador realizar optimizaciones agresivas, pues asume que diferentes punteros no hacen referencia al mismo espacio de memoria, es decir, que asegura los datos no se superponen.
+
+Ejemplos:
+```C
+void copy_array(int n, int * restrict dest, int * restrict src) {
+    for (int i = 0; i < n; i++) {
+        dest[i] = src[i];  // El compilador sabe que "dest" y "src" no se solapan.
+    }
+}
+```
+
+```C
+int sum_with_restrict(int * restrict a, int * restrict b) {
+    *a = 10;
+    *b = 20;
+    return *a + *b;
+    // Optimiza a return 30, porque a y b no se pueden solapan.
+}
+```
+
+```C
+float * restrict global_buffer;
+float * restrict temp_buffer;
+
+void init_buffers(int size) {
+    float *mem = malloc(2 * size * sizeof(float));
+    global_buffer = mem;  // Primera mitad.
+    temp_buffer = mem + size;  // Segunda mitad.
+    // Compilador sabe que no se solapan
+}
+```
+
+```C
+void undefined_behavior_example() {
+    int array[10] = {0};
+    // UB: mismo array, regiones solapadas
+    copy_array(5, array + 2, array);  // array[2] accesible por ambos punteros.
+}
+
+void correct_usage() {
+    int src[10] = {1,2,3,4,5,6,7,8,9,10};
+    int dest[10];
+
+    copy_array(10, dest, src);         // OK: arrays completamente diferentes.
+    copy_array(5, src + 5, src);       // OK: copia elementos 0-4 a posiciones 5-9.
+                                       // No hay solapamiento: src[0-4] → src[5-9].
+}
+```
+
+### Struct
+
+### Union
+
+### Bit-fields
