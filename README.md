@@ -904,7 +904,146 @@ void correct_usage() {
 ```
 
 ### Struct
+Una `struct` es un tipo que consiste de una secuencia de miembros, cuyo almacenamiento es asignado en una secuencia ordenada y contigua de memoria. La memoria asignada para cada uno de los miembros incrementa en el orden en que los miembros son definidos, por lo que el orden de declaración de los miembros de una struct sí afecta la asignación y orden de memoria.
+
+Además, es importante saber que el compilador puede agregar bytes extras como relleno para cumplir con el `alignment requirement`, por lo que el tamaño de una `struct` puede cambiar y no coincidir exactamente con el tamaño requerido por los miembros.
+
+Incluso, las structs pueden inicializarse usando los nombres de los miembros o simplemente usando su posición. Pero, si una struct es asignada mediante `=`, se realiza una copia exacta y completa de dicha struct.
+
+Ejemplos:
+```C
+// Struct simple.
+struct Point {
+    int x;
+    int y;
+}
+// Inicialización de struct simple.
+struct Point point = {10, 20};
+```
+
+```C
+// Struct con diferentes tipos.
+struct Student {
+    char name[50];
+    int age;
+    float grade;
+    struct Point point;
+};
+// Inicialización de struct compleja
+struct Student student = {
+    .name = "Juan",
+    .age = 20,
+    .grade = 85.5,
+    .point = {15, 25}
+};
+```
+
+```C
+// Efecto del orden en padding.
+struct BadOrder {
+    char a;     // 1 byte.
+    int b;      // 4 bytes (pero necesita padding).
+    char c;     // 1 byte.
+};  // Total: posiblemente 12 bytes por el padding.
+
+struct GoodOrder {
+    int b;      // 4 bytes.
+    char a;     // 1 byte.
+    char c;     // 1 byte.
+};  // Total: posiblemente 8 bytes, con menos padding.
+```
 
 ### Union
+Una `union` es un tipo que consiste de una secuencia de miembros cuyo almacenamiento es solapado o superpuesto, es decir, que todos los miembros de la union van a ocupar el mismo espacio y dirección de memoria, pero únicamente un miembro puede almacenar su valor a la vez. Por lo tanto, una union es tan grande como su miembro más grande (puede incluir padding) y los miembros que son más pequeños ocupan la misma dirección de memoria.
+
+También, es importante considerar que escribir en un miembro y leer de otro miembro es considerado por C como comportamiento indefinido, pero es permitido en ciertos casos. Además, debido a la naturaleza de la union solo se puede inicializar su primer miembro o especificar qué miembro se debe inicializar.
+
+Ejemplos:
+```C
+// Union simple.
+union Number {
+    int i;
+    float f;
+    double d;
+};
+// Inicialización de union simple.
+union Number number;
+number.f = 3.2;  // Se especifica qué miembro inicializar.
+```
+
+```C
+// Union con struct para datos variantes.
+struct VariantData {
+    enum { TYPE_INT, TYPE_FLOAT, TYPE_STRING } type;
+    union {
+        int i;
+        float f;
+        char str[20];
+    } data;
+};  // "data" es la union, que puede tener un int, o un float o un array.
+// Inicialización de struct con union.
+struct VariantData var1 = {TYPE_INT, .data.i = 100};
+```
 
 ### Bit-fields
+Un `bit-field` declara un miembro con un `width` específico en `bits`. Miembros declarados de esta forma que son adyacentes pueden ser empaquetados en bytes individuales.
+
+Por otro lado, solo pueden ser `bit-fields` los tipos enteros (`int`, `unsigned int`, `signed int`, `char`, `short`, `long` o `_Bool`). Estos son empaquetados en unidades de almacenamiento (bytes o palabras) de izquierda-a-derecha o de derecha-a-izquierda, dependiendo de la implementación.
+
+Además, un bit-field puede ser usado como simple padding o separación manual, puede forzar al siguiente bit-field a comenzar en una nueva unidad de almacenamiento, y no se pueden usar sus direcciones de memoria ni crear arreglos.
+
+Ejemplos:
+```C
+// Representación de fecha compacta.
+struct Date {
+    unsigned int day   : 5;    // 1-31 (5 bits suficientes).
+    unsigned int month : 4;    // 1-12 (4 bits suficientes).
+    unsigned int year  : 12;   // 0-4095 (año desde base).
+};
+// Uso de Date.
+struct Date today = {15, 7, 2025};
+```
+
+```C
+// Diferentes tipos de bit-fields.
+struct MixedBitfields {
+    signed int   temperature : 8;   // -128 a 127.
+    unsigned int humidity    : 7;   // 0 a 127.
+    _Bool        valid       : 1;   // true/false.
+    unsigned int             : 0;   // Forzar nueva unidad.
+    unsigned int checksum    : 8;   // En nueva unidad.
+};
+// Uso de MixedBitfields.
+struct MixedBitfields sensor = {0};
+sensor.temperature = -15;
+sensor.humidity = 65;
+sensor.valid = 1;
+sensor.checksum = 0xAB;
+```
+
+```C
+// Sistema de permisos tipo Unix.
+struct Permissions {
+    unsigned int owner_read   : 1;
+    unsigned int owner_write  : 1;
+    unsigned int owner_exec   : 1;
+    unsigned int group_read   : 1;
+    unsigned int group_write  : 1;
+    unsigned int group_exec   : 1;
+    unsigned int other_read   : 1;
+    unsigned int other_write  : 1;
+    unsigned int other_exec   : 1;
+    unsigned int              : 7;  // Padding.
+};
+// Uso de Permissions.
+struct Permissions perms = {0};
+perms.owner_read = 1;
+perms.owner_write = 1;
+perms.owner_exec = 1;
+perms.group_read = 1;
+perms.other_read = 1;
+```
+
+### Alignas
+
+### Typedef declaration
