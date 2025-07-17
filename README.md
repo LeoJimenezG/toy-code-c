@@ -1045,5 +1045,88 @@ perms.other_read = 1;
 ```
 
 ### Alignas
+Este es un type specifier `alignas` que permite modificar el `alignment requirement` del objeto que está siendo declarado. Solo puede ser usado cuando se declaran objetos diferentes a `bit-fields` o `registers`, no puede ser usado en los parámetros de funciones ni en `typedef`.
+```C
+alignas(expression)  // Alignment por número.
+alignas(type)  // Alignment basado en tipo.
+```
+
+Es posible que multiples usos de `alignas` aparezcan en una sola declaración, por lo que se tomará únicamente el que sea más estricto, es decir, es que declare un mayor número.
+
+Ejemplos:
+```C
+// Alineación por número
+alignas(16) char buffer[64];  // Alineado a 16 bytes.
+alignas(32) int numbers[10];  // Alineado a 32 bytes.
+```
+
+```C
+// Alineación por tipo
+alignas(double) char data[100];  // Alineado igual que double.
+alignas(long long) int value;  // Alineado igual que long long.
+```
+
+```C
+// Se toma el alignment más estricto (32 bytes).
+alignas(8) alignas(32) alignas(16) char strict_buffer[128];
+```
+
+El tamaño de un objeto se puede ver afectado por el uso de `alignas`, pues cambia el `alignment requirement` de un objeto, lo que provoca que el compilador agregue padding y ajuste el tamaño final de dicho objeto para que sea múltiplo del `alignment requirement`, permitiendo un acceso consistente, parejo y exacto del objeto.
 
 ### Typedef declaration
+La declaración usando `typedef` proporciona una forma de declarar un identificador como un `alias` para ser usado como reemplazo de otros tipos. Su uso no afecta el storage ni el linkage.
+```C
+typedef int int_t;
+typedef char* String;
+```
+
+Cada declarador donde se usa typedef define un nuevo identificador que actúa como un alias de un tipo específico, pero es imporante notar que no pueden ser `static` ni `extern`. El uso de esto no introduce un nuevo tipo, sino sinónimos a los tipos existentes, por lo que ambos tipos son compatibles entre sí.
+
+ Ejemplos:
+```C
+// Aliases para tipos primitivos.
+typedef int Age;
+typedef double Temperature;
+typedef char* String;
+
+// Uso de los aliases.
+Age person_age = 25;
+Temperature room_temp = 22.5;
+String message = "Hello";
+```
+
+```C
+// Con typedef.
+typedef struct Point {
+    int x, y;
+} Point;
+Point p1 = {30, 40};  // No necesita "struct".
+
+// Typedef anónimo (más común).
+typedef struct {
+    int x, y;
+} Point;
+Point p2 = {30, 40};  // No necesita "struct".
+```
+
+Este especificador únicamente puede establecer sinónimos para diferentes tipos de datos, es decir, otros identificadores o nombres. Por lo tanto, no puede usar `storage-class specifiers` porque no crea objetos nuevos, únicamente identificadores que son reemplazados por el tipo real.
+
+### Static assertion
+La función `static_assert()` sirve para evaluar condiciones en tiempo de compilación, por lo que si la condición es false, el programa no compila y devuelve el mensajes especificado.
+
+Sin embargo, solo puede usar expresiones constantes, es decir, valores que son conocidos en el momento de la compilación, y detiene la compilación únicamente si la condición es `false` o `0`.
+
+Ejemplos:
+```C
+// Verificar tamaños de tipos.
+static_assert(sizeof(int) == 4, "int debe ser de 4 bytes");
+static_assert(sizeof(char) == 1, "char debe ser de 1 byte");
+```
+
+```C
+// Asegurar que el sistema es compatible.
+static_assert(sizeof(void*) == 8, "Solo sistemas de 64 bits soportados");
+static_assert(CHAR_BIT == 8, "Se requieren 8 bits por byte");
+```
+
+### Atomic types
