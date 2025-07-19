@@ -1130,3 +1130,69 @@ static_assert(CHAR_BIT == 8, "Se requieren 8 bits por byte");
 ```
 
 ### Atomic types
+El concepto de tipos atómicos se refiere a tipos cuyas operaciones se realizan atómicamente, es decir, que se realizan todas las operaciones que se tengan que hacer ininterrumpidamente o ninguna se hace, lo que garantiza que nunca habrá errores de carrera (race conditions).
+
+Por lo tanto, en C, los objetos de tipo `_Atomic` son los únicos objetos que pueden estar completamente libres de `data races` o errores de carrera. Cada objeto de este tipo tiene asociado su propio `modification order`, que se refiere al orden total de modificaciones realizadas a ese objeto.
+
+```C
+#include <stdatomic.h>
+
+// Forma 1: Usando _Atomic.
+_Atomic int counter = 0;
+_Atomic bool ready = false;
+
+// Forma 2: Usando tipos predefinidos (equivalente).
+atomic_int counter2 = 0;
+atomic_bool ready2 = false;
+```
+
+#### Modification order
+Si la modificación `A` en el objeto `M` pasa antes que la modificación `B` en el mismo objeto `M`, en el orden de modificación de `M` es: `A` sucede antes que `B`. Además, cada objeto atómico tiene un único orden total, pero múltiples hilos pueden observar modificaciones a un objeto atómico en distino orden, es decir, desde diferentes puntos en el tiempo dentro de ese orden único.
+
+#### Coherence guarantees
+Hay cuatro tipos de coherencia garantizados para todas las operaciones atómicas (en pares):
+* `write-write coherence`: Si una operación A que modifica al objeto M sucede antes de una operación B que modifica al objeto M, entonces A aparece antes que B en el modification order.
+* `read-read coherence`: Si una operación de lectura A del objeto M sucede antes de una operación de lectura B del objeto M, y A toma el valor de una escritura X, entonces el valor usado por B es tomado de X o de otra escritura Y, donde Y aparece después de X en el modification order.
+* `read-write coherence`: Si una operación de lectura A del objeto M sucede antes de una operación B que modifica al objeto M, entonces A toma el valor de una escritura X, donde X aparece antes que B en el modification order.
+* `write-read coherence`: Si una operación A que modifica al objeto M sucede antes de una operación de lectura B, entonces B toma el valor de la operación A o de alguna otra escritura X que aparezca después de A en el modification order.
+
+#### Main atomic functions
+* `atomic_store()`: Escritura atómica.
+    ```C
+    atomic_store(&var, 42)
+    ```
+* `atomic_load()`: Lectura atómica.
+    ```C
+    int x = atomic_load(&var)
+    ```
+* `atomic_fetch_add()`: Suma atómica.
+    ```C
+    atomic_fetch_add(&var, 1)
+    ```
+* `atomic_fetch_sub()`: Resta atómica.
+    ```C
+    atomic_fetch_sub(&var, 1)
+    ```
+* `atomic_compare_exchange_strong()`: Comparar y cambiar (swap).
+
+### Memory ordering
+Las operaciones atómicas no establecen un orden de ejecución, pues su ejecución es secuencial y artitrario, por lo que simplemente aseguran que las operacinoes relacionadas con un objeto de tipo atómico ocurran antes de pasar a la siguiente operación, además, establecen garantías de qué hacer cuando una operación se da antes que otra.
+
+Por lo tanto, `memory ordering` soluciona este problema al poder indicar el orden de ejecución de operaciones de escritura y lectura:
+* `memory_order_relaxed`: Asegura únicamente que la operación se realizará atómicamente, sin importar o establecer un orden de ejecución.
+    ```C
+    atomic_store_explicit(&var, val, memory_order_relaxed)
+    ```
+* `memory_order_release`: Asegura que todas las operaciones anteriores se terminen de ejecutarpara poder ejecutar la operación atómica especificada.
+    ```C
+    atomic_store_explicit(&var, val, memory_order_release)
+    ```
+* `memory_order_acquire`: Asegura que todas las operaciones posteriores a la operación atómica sean ejecutadas únicamente cuando la operación atómica especificada sea ejecutada.
+    ```C
+    atomic_load_explicit(&var, memory_order_acquire)
+    ```
+* `memory_order_seq_cst`: Asegura las máximas garantías y es la opción por default.
+    ```C
+    atomic_store_explicit(&var, val, memory_order_seq_cst)
+    ```
+
