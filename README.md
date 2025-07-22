@@ -1248,3 +1248,66 @@ int current_users;
 int problematic = 10;   // Definición real.
 int problematic = 20;   // ERROR: Redefinición.
 ```
+
+### Attributes
+C23 introdujo el concepto de atributos definidos por la implementación para tipos, objetos, expresiones, etc. Los atributos proveen una sintáxis estándar unificada para implementaciones definidas.
+
+Un atributo puede ser usador casi en cualquier parte de un programa en C, y puede ser aplicado en casi cualquier cosa: tipos, variables, funciones, nombres, bloques de códigos, archivos enteros, etc. Además, en las declaraciones, los atributos pueden aparecer antes de la declaración o después del identificador introducido, en cuyo caso son simplemente combinados.
+
+Ejemplos:
+```C
+// Uso de los atributos.
+[[attribute-token]]  // Uso de atributo sin argumentos.
+[[attribute-token(arguments)]]  // Uso de atributo con argumentos.
+[[attribute-token1, attribute-token2]]  // Uso de múltiples argumentos.
+```
+
+```C
+// Posicionamiento de los atributos.
+[[deprecated]] void old_function(void);  // Antes de la declaración.
+
+void old_function [[deprecated]] (void);  // Después del identificador.
+
+void process(int data [[maybe_unused]]);  // En parámetros.
+
+[[maybe_unused]] static int debug_counter = 0;  // En variables.
+```
+
+El estándar de C únicamente define los siguientes atributos:
+* `[[deprecated]]` o `[[deprecated("reason")]]`: Indica que el uso del nombre o entidad declarada con este atributo está permitido, pero no se recomienda hacerlo.
+* `[[fallthrough]]`: Indica que el fall-through de un case es intencional y no debe ser diagnosticado como advertencia.
+* `[[nodiscard]]` o `[[nodiscard("reason")]]`: Ayuda al compilador a mostrar una advertencia y el valor retornado no es usado.
+* `[[maybe_unused]]`: Elimina advertencias del compilador si hay entidades sin usar.
+* `[[noreturn]]`: Indica que la función no retorna un valor (termina el programa o transfiere control permanentemente).
+* `[[unsequenced]]`: Indica que una función no tiene estado, no tiene efectos secundarios, es idempotente e independiente.
+* `[[reproducible]]`: Indica que una función no tiene efectos secundarios y es idempotente (pero puede depender del estado del programa).
+
+#### Attribute detection
+Se pueden hacer chequeos para detectar la presencia de atributos usando `__has_c_attribute()`. Ejemplos:
+```C
+// Macros condicionales basadas en soporte de atributos.
+#if __has_c_attribute(nodiscard)
+    #define MUST_USE [[nodiscard]]
+#else
+    #define MUST_USE  // Sin atributo si no está soportado.
+#endif
+
+#if __has_c_attribute(deprecated)
+    #define OBSOLETE(msg) [[deprecated(msg)]]
+#else
+    #define OBSOLETE(msg)  // Sin atributo si no está soportado.
+#endif
+```
+
+```C
+// Uso de las macros.
+MUST_USE int critical_calculation(int x, int y) {
+    return x * y + (x - y);
+}
+
+OBSOLETE("Use safe_copy instead") 
+char* unsafe_copy(char* dest, const char* src) {
+    return strcpy(dest, src);
+}
+```
+
