@@ -1196,3 +1196,55 @@ Por lo tanto, `memory ordering` soluciona este problema al poder indicar el orde
     atomic_store_explicit(&var, val, memory_order_seq_cst)
     ```
 
+### External and tentative definitions
+A alto nivel de una unidad de traducción, todos los programas en C son una secuencia de declaraciones, que declaran funciones y objetos con linkage externo e interno. Este tipo de declaraciones son conocidas como *external declarations* porque aparecen afuera de cualquier función.
+
+Los objetos que son declarados externamente tienen `static storage duration`, por lo que no pueden usar los especificadores `auto` o `register`. Pero los identificadores introducidos por declaraciones externas tienen un alcance a nivel de archivo.
+
+#### External declarations/definitions
+Las declaraciones/definiciones externas son aquellas que aparecen fuera de cualquier función y pueden tener linkage externo o linkage interno. Todas se caracterizan por:
+* Tener static storage duration (existen durante toda la vida del programa).
+* Tienen file scope (visibles desde su declaración hasta el final del archivo).
+* Pueden tener linkage externo (accesibles desde otros archivos) o interno (accesibles solo desde el archivo actual).
+
+Ejemplos:
+```C
+// Archivo: globals.c
+// External declaration con linkage externo (definición real).
+int global_counter = 0;
+
+// External declaration con linkage interno (static).
+static int internal_counter = 100;
+
+// External declaration de función.
+void increment_counters(void);
+```
+
+```C
+// Archivo: main.c
+// External declaration que referencia la variable en globals.c.
+extern int global_counter;
+
+// Declaración de función externa
+extern void increment_counters(void);
+```
+
+#### Tentative declarations/definitions
+Una `tentative definition` es una declaración externa sin un inicializador, que puede actuar o no como una definición, pues si sí existe una definición real, entonces actúa únicamente como una declaración. Pero, en caso contrario, actúa como una definición con inicialización automática a cero.
+
+Todas estas siguen las siguientes reglas:
+* **Sin inicializador**: No usan inicializadores, pues originalmente actúan solo como declaraciones.
+* **Comportamiento condicional**: Se convierten en definiciones reales solo si no existen otras definiciones reales.
+* **Inicialización automática**: Si se convierten en definiciones, se inicializan automáticamente a cero.
+* **Múltiples tentativas**: Se puede tener múltiples declaraciones tentativas del mismo identificador.
+
+Ejemplos:
+```C
+// Tentative definition (se convierte en definición real inicializada a 0).
+int current_users;
+```
+
+```C
+int problematic = 10;   // Definición real.
+int problematic = 20;   // ERROR: Redefinición.
+```
