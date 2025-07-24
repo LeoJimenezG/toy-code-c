@@ -1311,3 +1311,190 @@ char* unsafe_copy(char* dest, const char* src) {
 }
 ```
 
+## Functions
+Una función en C es un constructo que asocia un conjunto de sentencias (bloque de código) con un identificador (nombre de la función). Todo programa en C inicia con la ejecución de la función `main`, que determina o incova otras funciones definidas por el usuario.
+
+Las funciones pueden ser introducidas mediante declaraciones o definiciones, y pueden aceptar uno o más parámetros. Los cuales son inicializados desde los argumentos de la llamada de dicha función, incluso, puede retornar cualquier valor (no arrays ni funciones) al punto de su llamada.
+```C
+int main(int argc, char *argv[]) {
+    // Código escrito por el usuario.
+}
+```
+
+### Function declarations
+La declaración de una función introduce un identificador que designa una función, y opcionalmente, especifica los tipos de los parámetros de dicha función. A diferencia de la definición de una función, estas pueden aparecer a nivel de bloque y a nivel de archivo.
+```C
+int foo(int a, int b);  // Introduce el identificador foo.
+```
+
+Por otro lado, los parámetros de una declaración de una función se comportan diferente a los de una definición de una función:
+* Los identificadores de los parámetros no son obligatorios.
+    ```C
+    int f(int, double);  // OK.
+    int g(int a, double b); // OK.
+    ```
+* No se permiten `storage-class specifiers` (solo `register`).
+    ```C
+    int f(static int x);  // Error.
+    int f(int int x[static 10])  // OK, static no actúa como storage-class specifier.
+    ```
+* Cualquier parámetro de tipo array es convertido a su tipo de puntero correspondiente.
+    ```C
+    int f(int []);  // OK, se convierte a int f(int*).
+    int g(const int[10]);  // OK, se convierte a int g(const int*).
+    int x(int[*]);  // OK, se convierte a int x(int*).
+    ```
+* Cualquier parámetro de tipo función es convertido a su tipo de puntero correspondiente.
+    ```C
+    int f(char g(double));  // OK, se convierte a int f(char (*g)(double)).
+    int h(int(void));  // OK, se convierte a  int h(int (*)(void)).
+    ```
+* La lista de parámetros puede ser o terminar con `...`.
+    ```C
+    int f(int, ...);  // OK.
+    ```
+* Los parámetros de tipo `void` no pueden tener identificadores.
+    ```C
+    int f(void);  // OK.
+    int g(void x);  // Error.
+    ```
+* *Nota: Las declaraciones tipo `f()` y `f(void)` NO son iguales. Pues `f()` declara que una función recibe un número desconocido de parámetros; mientras que `f(void)` declara que una función no recibe ningún parámetro.*
+
+### Function definitions
+La definición de una función asocia el cuerpo de la función con el identificador (nombre de la función) y con su lista de parámetros. A diferencia de una declaración, cualquier definición de función es permitida únicamente a nivel de archivo, por lo que no existen las funciones anidadas en C.
+```C
+int max(int a, int b) {
+    return a > b ? a:b;
+}
+```
+
+De la misma forma que las declaraciones, las definiciones de funciones el valor de retorno debe ser un objeto completo diferente a un array o función. También, los parámetros de tipo array o tipo función, son convertidos a sus tipos de punteros correspondientes, y los parámetros tipo `void` no pueden ser nombrados. Sin embargo, todos los parámetros que van a ser usados dentro de la función deben ser nombrados, pero sí es posible declarar parámetros sin nombres.
+```C
+int f(int a, int b) { return 7; }  // OK, definición de una función.
+int g(int, int) { return 8; }  // OK, permitido desde C23.
+int h(void) { return 9; }  // OK, no declara parámetros.
+```
+
+### Inline function specifier
+Una función inline en C cumple con dos propósitos principales:
+* Optimización: Indicar al compilador que debe sustituir las llamadas de dicha función por el cuerpo de la función, con el objetivo de evitar overhead (eliminar el costo de llamada/retorno y uso del stack).
+* Linkage especial: Cambiar el comportamiento del linkage para permitir múltiples definiciones idénticas en diferentes archivos sin causar errores.
+
+La intención de usar `inline` es servir como sugerencia al compilador para realizar optimizaciones que requieren que la definición completa de la función sea visible en el punto de llamada. Importante: `inline` es una sugerencia, no una orden, el compilador puede ignorarla si considera que no es beneficiosa.
+```C
+inline int cuadrado(int x) { 
+    return x * x; 
+}
+
+int main() {
+    int resultado = cuadrado(5);  // Puede ser reemplazado por: int resultado = 5 * 5;
+    return 0;
+}
+```
+
+El resultado es similar a las macros de tipo función, pero con importantes diferencias, pues los identificadores y variables en una función inline hacen referencia a las definiciones visibles en el punto de definición de la función, no en el punto de llamada.
+```C
+#define MACRO_CUADRADO(x) ((x) * (x))
+inline int inline_cuadrado(int x) { return x * x; }
+
+int main() {
+    int i = 5;
+    // La macro evalúa x dos veces (problema con efectos secundarios).
+    int resultado1 = MACRO_CUADRADO(++i);  // i se incrementa dos veces.
+
+    i = 5;
+    // La función inline evalúa el parámetro una sola vez.
+    int resultado2 = inline_cuadrado(++i);  // i se incrementa solo una vez.
+
+    return 0;
+}
+```
+
+Cuando se usa solo `inline`, el compilador puede hacer inline (sustituir la llamada por el código, no genera función externa) o no hacer inline (Generar una función normal disponible externamente). Pero, cuando se combina con `static`, garantiza que cada archivo tenga su propia versión local.
+
+Por otro lado, el compilador puede ignorar inline cuando:
+* La función es muy grande (aumentaría demasiado el tamaño del código).
+* La función es recursiva.
+* Se toma la dirección de la función (puntero a función).
+* El compilador determina que no hay beneficio de rendimiento.
+
+### Variadic arguments
+Las funciones variádicas son funciones que pueden ser llamadas con una cantidad diferente de argumentos. Esto es indicado con el parámetro en forma `...`, el cual debe aparecer al final de la lista de parámetros y debe haber al menos un parámetro fijo antes de los `...`.
+```C
+int printf(const char *format, ...);  // Función variádica estándar.
+int suma(int count, ...);             // count indica cuántos números seguirán.
+int max(int first, ...);              // Al menos un argumento fijo requerido.
+```
+
+Cada argumento que forma parte de la lista de argumentos variables pasa por conversiones implícitas automáticas:
+* `char` y `short` -> `int`
+* `float` -> `double`
+* `array` -> `pointer`
+* `function` -> `pointer`
+
+Para acceder a los argumentos variables, se utilizan las siguientes herramientas de `<stdarg.h>`:
+* `va_list`: Tipo que contiene la información necesaria para acceder a los argumentos variables.
+* `va_start(ap, last_fixed)`: Inicializa `ap` para acceder a los argumentos variables. `last_fixed` es el último parámetro fijo.
+* `va_arg(ap, type)`: Obtiene el siguiente argumento de tipo `type` y avanza `ap`.
+* `va_copy(dst, src)`: Copia el estado de `src` a `dst` (útil para múltiples pasadas).
+* `va_end(ap)`: Limpia y finaliza el uso de `ap`.
+
+Ejemplos:
+```C
+// Declarar variable para argumentos con va_list.
+void ejemplo_va_list(int count, ...) {
+    va_list argumentos;  // Esta variable contendrá la info de los argumentos.
+    printf("va_list declarado correctamente\n");
+}
+```
+
+```C
+// Inicializar acceso a argumentos con va_start.
+void ejemplo_va_start(int count, ...) {
+    va_list args;
+    va_start(args, count);  // Inicializa args, count es el último parámetro fijo.
+    printf("Acceso a argumentos inicializado\n");
+    va_end(args);
+}
+```
+
+```C
+// Obtener el siguiente argumento con va_arg.
+void ejemplo_va_arg(int count, ...) {
+    va_list args;
+    va_start(args, count);
+    int primer_numero = va_arg(args, int);  // Obtiene el primer argumento como int.
+    int segundo_numero = va_arg(args, int);  // Obtiene el segundo argumento como int
+    printf("Primer número: %d, Segundo número: %d\n", primer_numero, segundo_numero);
+    va_end(args);
+}
+```
+
+```C
+// Copiar argumentos para usar dos veces con va_copy.
+void ejemplo_va_copy(int count, ...) {
+    va_list args_originales, args_copia;
+    va_start(args_originales, count);
+    va_copy(args_copia, args_originales);  // Copia los argumentos.
+    // Usar los originales.
+    int suma = va_arg(args_originales, int) + va_arg(args_originales, int);
+    // Usar la copia (empezando desde el principio otra vez).
+    int producto = va_arg(args_copia, int) * va_arg(args_copia, int);
+    printf("Suma: %d, Producto: %d\n", suma, producto);
+    va_end(args_originales);
+    va_end(args_copia);
+}
+```
+
+```C
+// Limpiar después de usar argumentos.
+void ejemplo_va_end(int count, ...) {
+    va_list args;
+    va_start(args, count);
+    int numero = va_arg(args, int);
+    printf("Número obtenido: %d\n", numero);
+    va_end(args);  // Limpia y finaliza el uso de argumentos.
+    printf("Argumentos limpiados correctamente\n");
+}
+```
+
